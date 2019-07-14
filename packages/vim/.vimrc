@@ -1,6 +1,8 @@
 " -- Indentation options
 " New lines inherit the indentation of previous lines
 set autoindent
+" Sets file type specific indent rules
+filetype indent on
 " Convert tabs to spaces
 set expandtab
 " When shifting lines, round the indentation to the nearest multiple of 'shiftwidth'
@@ -35,6 +37,8 @@ set scrolloff=5
 set sidescrolloff=10
 " Enable syntax highlighting
 syntax enable
+" Visual selection colour
+highlight Visual cterm=bold ctermbg=Blue ctermfg=NONE
 " Enable line wrapping
 set wrap
 
@@ -61,6 +65,10 @@ set visualbell
 set mouse=a
 " Set the window’s title, reflecting the file currently being edited
 set title
+" Shows a menu when completing filenames
+set wildmenu
+" Highlight matching bracket
+set showmatch
 
 " -- Misc options
 " Automatically re-read files if unmodified inside Vim
@@ -79,4 +87,13 @@ set history=1000
 set nomodeline
 " Interpret octal as decimal when incrementing numbers
 set nrformats-=octal
+
+" -- Additional functionality
+" Map leader key to space
+let mapleader=" "
+nnoremap <SPACE> <Nop>
+" Highlight last inserted text
+nnoremap gV `[v`]
+" turn off search highlight
+nnoremap <leader>s :nohlsearch<CR>
 

@@ -1,0 +1,7 @@
+[user]
+        email = phillquantrill@gmail.com
+        name = Phill
+
+[core]
+	excludesfile = ~/.gitignore-global
+

@@ -7,6 +7,6 @@ fi
 
 mkdir -p $HOME_PATH/bin
 echo "#!/bin/bash" > $HOME_PATH/bin/everything
-echo "cd '$EVERYTHING_PATH'; exec -c ./everything.sh" >> $HOME_PATH/bin/everything
+echo "cd $EVERYTHING_PATH; exec ./everything.sh \"\$@\"" >> $HOME_PATH/bin/everything
 chmod +x $HOME_PATH/bin/everything
 

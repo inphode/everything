@@ -10,3 +10,5 @@ echo "#!/bin/bash" > $HOME_PATH/bin/everything
 echo "cd $EVERYTHING_PATH; exec ./everything.sh \"\$@\"" >> $HOME_PATH/bin/everything
 chmod +x $HOME_PATH/bin/everything
 
+sudo apt install -y curl
+

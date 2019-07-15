@@ -112,5 +112,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
+xrdb $HOME/.Xresources
+
 export VISUAL=vim
 export EDITOR="$VISUAL"

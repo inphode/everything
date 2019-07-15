@@ -1,3 +1,6 @@
+call plug#begin('~/.vim/plugged')
+call plug#end()
+
 " -- Indentation options
 " New lines inherit the indentation of previous lines
 set autoindent

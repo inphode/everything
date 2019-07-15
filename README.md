@@ -2,7 +2,7 @@
 
 Scripts, dotfiles and other stuff for restoring and maintaining config and notes between systems.
 
-## Insallation
+## Setup
 
 Set up file synchronisation via Google Drive, Dropbox or similar.
 

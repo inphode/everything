@@ -65,7 +65,7 @@ set noerrorbells
 " Flash the screen instead of beeping on errors
 set visualbell
 " Enable mouse for scrolling and resizing
-set mouse=a
+"set mouse=a
 " Set the window’s title, reflecting the file currently being edited
 set title
 " Shows a menu when completing filenames

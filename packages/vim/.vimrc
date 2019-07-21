@@ -20,10 +20,10 @@ set tabstop=4
 " -- Search options
 " Enable search highlighting
 set hlsearch
-" Ignore case when searching
-set ignorecase
 " Incremental search that shows partial matches
 set incsearch
+" Ignore case when searching
+set ignorecase
 " Automatically switch search to case-sensitive when search query contains an uppercase letter
 set smartcase
 
@@ -63,13 +63,11 @@ set relativenumber
 " Disable beep on errors
 set noerrorbells
 " Flash the screen instead of beeping on errors
-set visualbell
+"set visualbell
 " Enable mouse for scrolling and resizing
 "set mouse=a
 " Set the window’s title, reflecting the file currently being edited
 set title
-" Shows a menu when completing filenames
-set wildmenu
 " Highlight matching bracket
 set showmatch
 

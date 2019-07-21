@@ -114,5 +114,17 @@ fi
 
 xrdb $HOME/.Xresources
 
+# Make vim the default editor
 export VISUAL=vim
 export EDITOR="$VISUAL"
+
+# Add bin directory in home directory to PATH
+export PATH="$HOME/bin:$PATH"
+
+# NVM stuff
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# This file is kept out of version control to allow per-system bashrc lines
+[ -s "$HOME/.localrc" ] && \. "$HOME/.localrc"

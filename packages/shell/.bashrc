@@ -114,12 +114,12 @@ fi
 
 xrdb $HOME/.Xresources
 
-# Make vim the default editor
-export VISUAL=vim
+# Make nvim the default editor
+export VISUAL=nvim
 export EDITOR="$VISUAL"
 
 # Add bin directory in home directory to PATH
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 # NVM stuff
 export NVM_DIR="$HOME/.nvm"

@@ -12,3 +12,5 @@ pip3 install --user --upgrade neovim-remote
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
+sudo apt install ctags -y
+

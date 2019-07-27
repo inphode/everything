@@ -1,4 +1,14 @@
-call plug#begin('~/.vim/plugged')
+" Specify a directory for plugins
+call plug#begin('~/.local/share/nvim/plugged')
+
+" Insert plugins here:
+Plug 'morhetz/gruvbox'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'easymotion/vim-easymotion'
+
+" Initialize plugin system
 call plug#end()
 
 " -- Indentation options
@@ -38,12 +48,20 @@ set linebreak
 set scrolloff=5
 " The number of screen columns to keep to the left and right of the cursor
 set sidescrolloff=10
-" Enable syntax highlighting
-syntax enable
-" Visual selection colour
-highlight Visual cterm=bold ctermbg=Blue ctermfg=NONE
 " Enable line wrapping
 set wrap
+
+" -- Theme/colour options
+" Enable true color support
+"set termguicolors
+" Enable syntax highlighting
+syntax enable
+" Enable gruvbox theme italics (must be set before colorscheme gruvbox
+let g:gruvbox_italic=1
+" Enable gruvbox theme
+colorscheme gruvbox
+" Visual selection colour
+"highlight Visual cterm=bold ctermbg=LightYellow ctermfg=NONE
 
 " -- User interface options
 " Always display the status bar
@@ -65,7 +83,7 @@ set noerrorbells
 " Flash the screen instead of beeping on errors
 "set visualbell
 " Enable mouse for scrolling and resizing
-"set mouse=a
+set mouse=a
 " Set the window’s title, reflecting the file currently being edited
 set title
 " Highlight matching bracket
@@ -97,4 +115,8 @@ nnoremap <SPACE> <Nop>
 nnoremap gV `[v`]
 " turn off search highlight
 nnoremap <leader>s :nohlsearch<CR>
+
+" -- Plugin options
+" Nerdtree toggle
+map <leader>n :NERDTreeToggle<CR>
 

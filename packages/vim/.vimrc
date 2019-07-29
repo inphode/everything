@@ -2,7 +2,8 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
 " Insert plugins here:
-Plug 'morhetz/gruvbox'
+"Plug 'morhetz/gruvbox'
+Plug 'ayu-theme/ayu-vim'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ludovicchabant/vim-gutentags'
@@ -56,10 +57,20 @@ set wrap
 "set termguicolors
 " Enable syntax highlighting
 syntax enable
+
+set termguicolors     " enable true colors support
+let ayucolor="light"  " for light version of theme
+"let ayucolor="mirage" " for mirage version of theme
+"let ayucolor="dark"   " for dark version of theme
+colorscheme ayu
+
+" GRUVBOX
 " Enable gruvbox theme italics (must be set before colorscheme gruvbox
-let g:gruvbox_italic=1
+"let g:gruvbox_italic=1
 " Enable gruvbox theme
-colorscheme gruvbox
+"colorscheme gruvbox
+" Set gruvbox color scheme to light version
+"set bg=light
 " Visual selection colour
 "highlight Visual cterm=bold ctermbg=LightYellow ctermfg=NONE
 

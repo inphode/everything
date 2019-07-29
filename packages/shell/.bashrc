@@ -118,6 +118,9 @@ xrdb $HOME/.Xresources
 export VISUAL=nvim
 export EDITOR="$VISUAL"
 
+# Defeat muscle memory
+alias vim='nvim'
+
 # Add bin directory in home directory to PATH
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 

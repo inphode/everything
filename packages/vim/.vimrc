@@ -15,6 +15,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-signify'
 Plug 'mattn/emmet-vim'
+Plug 'mhinz/vim-startify'
 
 " Initialize plugin system
 call plug#end()

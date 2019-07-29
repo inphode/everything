@@ -3,11 +3,17 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " Insert plugins here:
 "Plug 'morhetz/gruvbox'
-Plug 'ayu-theme/ayu-vim'
+"Plug 'ayu-theme/ayu-vim'
+Plug 'fenetikm/falcon'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'easymotion/vim-easymotion'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'mhinz/vim-signify'
 
 " Initialize plugin system
 call plug#end()
@@ -53,24 +59,24 @@ set sidescrolloff=10
 set wrap
 
 " -- Theme/colour options
-" Enable true color support
-"set termguicolors
 " Enable syntax highlighting
 syntax enable
+" Enable true color support
+set termguicolors
+" Add airline support for falcon
+let g:falcon_airline = 1
+let g:airline_theme = 'falcon'
+" Smarter tab line (displays buffers when there's 1 tab)
+let g:airline#extensions#tabline#enabled = 1
+" Enable falcon color scheme
+colorscheme falcon
 
-set termguicolors     " enable true colors support
-let ayucolor="light"  " for light version of theme
+" Ayu theme
+"let ayucolor="light"  " for light version of theme
 "let ayucolor="mirage" " for mirage version of theme
 "let ayucolor="dark"   " for dark version of theme
-colorscheme ayu
+"colorscheme ayu
 
-" GRUVBOX
-" Enable gruvbox theme italics (must be set before colorscheme gruvbox
-"let g:gruvbox_italic=1
-" Enable gruvbox theme
-"colorscheme gruvbox
-" Set gruvbox color scheme to light version
-"set bg=light
 " Visual selection colour
 "highlight Visual cterm=bold ctermbg=LightYellow ctermfg=NONE
 
@@ -101,6 +107,8 @@ set title
 set showmatch
 
 " -- Misc options
+" Fast terminal
+set ttyfast
 " Automatically re-read files if unmodified inside Vim
 set autoread
 " Allow backspacing over indention, line breaks and insertion start
@@ -131,3 +139,6 @@ nnoremap <leader>s :nohlsearch<CR>
 " Nerdtree toggle
 map <leader>n :NERDTreeToggle<CR>
 
+" ctrlP
+let g:ctrlp_map = '<leader>p'
+let g:ctrlp_cmd = 'CtrlP'

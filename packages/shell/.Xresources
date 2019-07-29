@@ -37,5 +37,5 @@ URxvt.bolditalicFont:   xft:inconsolata:size=13:antialias=true:hinting=true, xft
 URxvt.scrollBar:        False
 URxvt.scrollBar_right:  False
 
-Xft.dpi: 96
+Xft.dpi: 192
 

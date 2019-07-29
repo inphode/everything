@@ -8,6 +8,12 @@ Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'easymotion/vim-easymotion'
+Plug 'ctrlpvim/ctrlp.vim'
+"Plug 'itchyny/lightline.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'vim-airline/vim-airline'
+Plug 'airblade/vim-gitgutter'
+Plug 'mattn/emmet-vim'
 
 " Initialize plugin system
 call plug#end()
@@ -58,9 +64,10 @@ set wrap
 " Enable syntax highlighting
 syntax enable
 
+let g:lightline = {'colorscheme': 'one'}
 set termguicolors     " enable true colors support
-let ayucolor="light"  " for light version of theme
-"let ayucolor="mirage" " for mirage version of theme
+"let ayucolor="light"  " for light version of theme
+let ayucolor="mirage" " for mirage version of theme
 "let ayucolor="dark"   " for dark version of theme
 colorscheme ayu
 

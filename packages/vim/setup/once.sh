@@ -14,3 +14,5 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 
 sudo apt install ctags -y
 
+vim -c 'CocInstall -sync coc-json coc-html coc-tsserver coc-css coc-vetur coc-phpls coc-yaml coc-python coc-emmet coc-highlight coc-yank coc-git coc-texlab|q'
+

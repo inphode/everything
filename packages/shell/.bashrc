@@ -131,3 +131,5 @@ export NVM_DIR="$HOME/.nvm"
 
 # This file is kept out of version control to allow per-system bashrc lines
 [ -s "$HOME/.localrc" ] && \. "$HOME/.localrc"
+
+[ -x "$(command -v xcape)" ] && xcape -e 'Control_L=Escape'

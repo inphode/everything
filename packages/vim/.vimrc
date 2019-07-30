@@ -17,6 +17,7 @@ Plug 'mhinz/vim-signify'
 Plug 'mattn/emmet-vim'
 Plug 'mhinz/vim-startify'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'jwalton512/vim-blade'
 
 " Initialize plugin system
 call plug#end()

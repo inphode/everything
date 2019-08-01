@@ -118,6 +118,9 @@ xrdb $HOME/.Xresources
 export VISUAL=nvim
 export EDITOR="$VISUAL"
 
+# Defeat muscle memory
+alias vim='nvim'
+
 # Add bin directory in home directory to PATH
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
@@ -128,3 +131,9 @@ export NVM_DIR="$HOME/.nvm"
 
 # This file is kept out of version control to allow per-system bashrc lines
 [ -s "$HOME/.localrc" ] && \. "$HOME/.localrc"
+
+# If xcape command exists, set control to act as escape when pressed and released
+[ -x "$(command -v xcape)" ] && xcape -e 'Control_L=Escape'
+
+# If node is not in path get nvm to put it in the path
+[ -x "$(command -v node)" ] || [ -s "$NVM_DIR/nvm.sh" ] && nvm use v8.16.0

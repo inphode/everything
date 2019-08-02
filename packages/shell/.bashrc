@@ -112,6 +112,8 @@ if ! shopt -oq posix; then
   fi
 fi
 
+export XDG_CONFIG_HOME=$HOME/.config
+
 xrdb $HOME/.Xresources
 
 # Make nvim the default editor
@@ -125,7 +127,7 @@ alias vim='nvim'
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 # NVM stuff
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
@@ -135,5 +137,3 @@ export NVM_DIR="$HOME/.nvm"
 # If xcape command exists, set control to act as escape when pressed and released
 [ -x "$(command -v xcape)" ] && xcape -e 'Control_L=Escape'
 
-# If node is not in path get nvm to put it in the path
-[ -x "$(command -v node)" ] || [ -s "$NVM_DIR/nvm.sh" ] && nvm use v8.16.0

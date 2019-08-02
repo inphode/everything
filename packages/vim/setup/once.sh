@@ -14,7 +14,7 @@ pip3 install --user --upgrade neovim-remote
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-sudo apt install universal-ctags -y
+sudo apt install universal-ctags ripgrep -y
 
 nvim +PlugInstall +qall > /dev/null
 nvim -c 'CocInstall -sync coc-json coc-html coc-tsserver coc-css coc-vetur coc-phpls coc-yaml coc-python coc-emmet coc-highlight coc-yank coc-git coc-texlab|q'

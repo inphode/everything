@@ -153,7 +153,9 @@ nmap <leader>/ :BLines<cr>|    " fuzzy find lines in the current file
 nmap <leader>b :Buffers<cr>|   " fuzzy find an open buffer
 nmap <leader>r :Rg |           " fuzzy find text in the working directory
 nmap <leader>c :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
-nmap <leader>h :History:<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
+nmap <leader>h :History:<cr>|  " fuzzy find Command history
+nmap <leader>e :History<cr>|   " fuzzy find v:oldfiles and open buffers
+nmap <leader>m :Marks<cr>|     " fuzzy find Marks
 
 " coc.vim
 " Make syntax highlighting work for jsonc comments

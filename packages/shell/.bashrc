@@ -123,6 +123,9 @@ export EDITOR="$VISUAL"
 # Defeat muscle memory
 alias vim='nvim'
 
+# Get the current git root directory
+alias gd='git rev-parse --show-toplevel'
+
 # Add bin directory in home directory to PATH
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 

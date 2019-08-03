@@ -144,6 +144,24 @@ nnoremap gV `[v`]
 nnoremap <leader>s :nohlsearch<CR>
 
 " -- Plugin options
+" Startify
+" When opening a file or bookmark, don't change to its directory
+let g:startify_change_to_dir = 0
+" When opening a file or bookmark, seek and change to the root of the VCS
+let g:startify_change_to_vcs_root = 1
+" Bookmarks (these should probably be moved outside the VCS
+let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/.bashrc' ]
+" Common commands
+let g:startify_commands = [ {'u': ['Update Plugins', 'PlugInstall']} ]
+" Startify list ordering
+let g:startify_lists = [
+            \ { 'type': 'sessions',  'header': ['   Sessions']       },
+            \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+            \ { 'type': 'files',     'header': ['   MRU']            },
+            \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+            \ { 'type': 'commands',  'header': ['   Commands']       },
+            \ ]
+
 " Nerdtree toggle
 map <leader>n :NERDTreeToggle<CR>
 

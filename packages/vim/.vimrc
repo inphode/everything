@@ -26,6 +26,16 @@ Plug 'junegunn/fzf.vim'
 " Initialize plugin system
 call plug#end()
 
+" Adds a DiffSaved command for seeing a diff of changes since last save
+function! s:DiffWithSaved()
+  let filetype=&ft
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+com! DiffSaved call s:DiffWithSaved()
+
 " -- Indentation options
 " New lines inherit the indentation of previous lines
 set autoindent
@@ -163,7 +173,11 @@ let g:startify_lists = [
             \ ]
 
 " Nerdtree toggle
-map <leader>n :NERDTreeToggle<CR>
+map <leader>n :NERDTreeToggle<cr>
+map <leader>N :NERDTreeFind<cr>
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+let NERDTreeAutoDeleteBuffer = 1
 
 " fzf (and ripgrep)
 nmap <leader>f :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
@@ -174,6 +188,34 @@ nmap <leader>c :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in S
 nmap <leader>h :History:<cr>|  " fuzzy find Command history
 nmap <leader>e :History<cr>|   " fuzzy find v:oldfiles and open buffers
 nmap <leader>m :Marks<cr>|     " fuzzy find Marks
+" Enable per-command history.
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+" In Neovim, you can set up fzf window using a Vim command
+"let g:fzf_layout = { 'window': 'enew' }
+"let g:fzf_layout = { 'window': '-tabnew' }
+"let g:fzf_layout = { 'window': '10new' }
+"let $FZF_DEFAULT_OPTS='--layout=reverse'
+let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+function! FloatingFZF()
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+
+  let height = &lines - 8
+  let width = float2nr(&columns - (&columns * 2 / 10))
+  let col = float2nr((&columns - width) / 2)
+
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': 4,
+        \ 'col': col,
+        \ 'width': width,
+        \ 'height': height
+        \ }
+
+  call nvim_open_win(buf, v:true, opts)
+endfunction
+" Use rg as the find command to respect gitignore
+let $FZF_DEFAULT_COMMAND = 'rg --glob !/.git/ --hidden -l ""'
 
 " coc.vim
 " Make syntax highlighting work for jsonc comments

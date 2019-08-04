@@ -1,2 +1,8 @@
 /.env
+/packages.list
+/environments.list
+/modules.list
+/backups
+/modules
+/bin
 

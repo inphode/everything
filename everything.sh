@@ -13,10 +13,67 @@ if ! [ -x "$(command -v stow)" ]; then
     sudo apt install stow
 fi
 
-PACKAGES=`( cd packages; ls -d * )`
-STOW_ARGS="--restow --no-folding --ignore=setup --dir=$EVERYTHING_PATH/packages --target=$HOME_PATH --verbose $PACKAGES"
+function backup_conflicts {
+    mkdir -p backups
+    for filename in $1; do
+        if [[ -h $HOME_PATH/$filename ]]; then
+            echo "Removing symlink $HOME_PATH/$filename"
+            rm "$HOME_PATH/$filename"
+        elif [[ -f $HOME_PATH/$filename ]]; then
+            echo "Backing up file $HOME_PATH/$filename"
+            mkdir -p "backups/${filename%${filename##*/}}"
+            mv "$HOME_PATH/$filename" "backups/$filename"
+        fi
+    done
+}
 
-if [ "$1" = "apply" ]; then
+function restore_conflicts {
+    if [[ -d backups ]]; then
+        for filename in $(cd backups; find . -type f -print | sed 's#./##' | xargs); do
+            echo "Restoring backup $HOME_PATH/$filename"
+            if [[ -h $HOME_PATH/$filename ]]; then
+                rm "$HOME_PATH/$filename"
+            fi
+            mv "backups/$filename" "$HOME_PATH/$filename"
+        done
+    fi
+    rm -r backups
+}
+
+PACKAGES=""
+while IFS="" read -r package || [ -n "$package" ]
+do
+    [[ -z "$package" ]] && continue
+    if [[ -d $EVERYTHING_PATH/packages/$package ]]; then
+        PACKAGES+=" $package"
+    fi
+    while IFS="" read -r environment || [ -n "$environment" ]
+    do
+        if [[ -n "$environment" ]] && [[ -d $EVERYTHING_PATH/packages/$package.$environment ]]; then
+            PACKAGES+=" $package.$environment"
+        fi
+    done < environments.list
+done < packages.list
+
+STOW_ARGS="--restow --no-folding --override=.* --dir=$EVERYTHING_PATH/packages --target=$HOME_PATH --verbose $PACKAGES"
+
+if [ "$1" = "sync" ]; then
+
+    CONFLICTS=$(stow --simulate $STOW_ARGS 2>&1 | awk '!a[$0]++' | awk '/\* existing target is/ {print $NF}' | xargs)
+    if [[ -n "$CONFLICTS" ]]; then
+        echo "Found conflicts: $CONFLICTS"
+        echo "Backing up conflicts"
+        backup_conflicts "$CONFLICTS"
+    fi
+    
+    echo "Deploying symlinks"
+    stow $STOW_ARGS
+
+elif [ "$1" = "restore" ]; then
+
+    restore_conflicts
+
+elif [ "$1" = "apply" ]; then
     stow $STOW_ARGS
     for package in $PACKAGES
     do
@@ -40,6 +97,7 @@ elif [ "$1" = "init" ]; then
         echo ""
     done
 else
+    echo stow --simulate $STOW_ARGS
     stow --simulate $STOW_ARGS
     echo ""
     echo -e "\033[36m Stow actions simulated.\033[0m\n"

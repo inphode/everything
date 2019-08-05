@@ -19,7 +19,7 @@ function backup_conflicts {
     mkdir -p backups
     for filename in $1; do
         # TODO: This seemed to be backing up the original files from some symlinks. It should just remove symlinks instead.
-        if [[ -h $HOME_PATH/$filename ]]; then
+        if [[ -L $HOME_PATH/$filename ]]; then
             echo "Removing symlink $HOME_PATH/$filename"
             rm "$HOME_PATH/$filename"
         elif [[ -f $HOME_PATH/$filename ]]; then

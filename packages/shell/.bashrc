@@ -114,8 +114,6 @@ fi
 
 export XDG_CONFIG_HOME=$HOME/.config
 
-xrdb $HOME/.Xresources
-
 # Make nvim the default editor
 export VISUAL=nvim
 export EDITOR="$VISUAL"

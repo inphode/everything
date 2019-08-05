@@ -162,7 +162,7 @@ let g:startify_change_to_vcs_root = 1
 " Bookmarks (these should probably be moved outside the VCS
 let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/.bashrc' ]
 " Common commands
-let g:startify_commands = [ {'u': ['Update Plugins', 'PlugInstall']} ]
+let g:startify_commands = [ {'u': ['Update Plugins', 'PlugUpdate']} ]
 " Startify list ordering
 let g:startify_lists = [
             \ { 'type': 'sessions',  'header': ['   Sessions']       },

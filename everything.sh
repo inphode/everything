@@ -156,11 +156,12 @@ elif [ "$1" = "restore" ]; then
     restore_conflicts
 
 else
+
     echo stow --simulate $STOW_ARGS
     stow --simulate $STOW_ARGS
     echo ""
     echo -e "\033[36m Stow actions simulated.\033[0m\n"
-    echo -e "\033[36m Run '$0 apply' to perform actions.\033[0m"
-    echo -e "\033[36m Or for first time setup run '$0 init'.\033[0m\n"
+    echo -e "\033[36m Run '$0 sync' to sync packages and modules.\033[0m"
+
 fi
 

@@ -95,37 +95,37 @@ if [ "$1" = "sync" ]; then
     do
         echo -e "\033[36m Processing module: $module\033[0m"
         echo ""
-        if [[ "${module::1}" == '!' ]]; then
-            if ! [[ -x "modules/${module/!/}/disable.sh" ]]; then
+        if [[ "${module::1}" == '-' ]]; then
+            if ! [[ -x "modules/${module/-/}/disable.sh" ]]; then
                 echo "Could not find module: $module"
                 continue
             fi
             # Package marked to be disabled. First verify installation.
-            VERIFY_OUTPUT=$( cd "modules/${module/!/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
+            VERIFY_OUTPUT=$( cd "modules/${module/-/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
             if [[ $? == 0 ]]; then
                 # Disable module
-                DISABLE_OUTPUT=$( cd "modules/${module/!/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./disable.sh )
+                DISABLE_OUTPUT=$( cd "modules/${module/-/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./disable.sh )
 
                 if [[ $? == 0 ]]; then
                     # Verify it was disabled
-                    VERIFY_OUTPUT=$( cd "modules/${module/!/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
+                    VERIFY_OUTPUT=$( cd "modules/${module/-/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
                     if [[ $? == 0 ]]; then
-                        echo "Please manually check ${module/!/}. Disable reported success, but verify claims it's enabled."
-                        sed -i "s/$module/?${module/!/}/g" $EVERYTHING_PATH/modules.list
+                        echo "Please manually check ${module/-/}. Disable reported success, but verify claims it's enabled."
+                        sed -i "s/$module/?${module/-/}/g" $EVERYTHING_PATH/modules.list
                     else
-                        echo "SUCCESS (disable): ${module/!/}"
-                        sed -i "s/$module/#${module/!/}/g" $EVERYTHING_PATH/modules.list
+                        echo "SUCCESS (disable): ${module/-/}"
+                        sed -i "s/$module/#${module/-/}/g" $EVERYTHING_PATH/modules.list
                     fi
                 else
-                    echo "FAILED (disable): ${module/!/}"
+                    echo "FAILED (disable): ${module/-/}"
                     echo $DISABLE_OUTPUT
                 fi
             else
-                echo "Already disabled: ${module/!/}"
-                sed -i "s/$module/#${module/!/}/g" $EVERYTHING_PATH/modules.list
+                echo "Already disabled: ${module/-/}"
+                sed -i "s/$module/#${module/-/}/g" $EVERYTHING_PATH/modules.list
             fi
         elif [[ "${package::1}" == '?' ]]; then
-            echo "Pending manual check: ${module/!/}"
+            echo "Pending manual check: ${module/-/}"
         else
             if ! [[ -x "modules/$module/enable.sh" ]]; then
                 echo "Could not find module: $module"

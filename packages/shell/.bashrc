@@ -125,7 +125,7 @@ alias vim='nvim'
 alias gd='git rev-parse --show-toplevel'
 
 # Add bin directory in home directory to PATH
-export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export PATH="$HOME/.everything/bin:$HOME/bin:$HOME/.local/bin:$PATH"
 
 # NVM stuff
 export NVM_DIR="$HOME/.config/nvm"

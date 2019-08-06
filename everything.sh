@@ -10,15 +10,22 @@ fi
 
 source .env
 
+PATH=$EVERYTHING_PATH/bin:$HOME_PATH/.local/bin:$PATH
+
 if ! [ -x "$(command -v stow)" ]; then
     echo -e "\033[36m stow command not found. Installing now...\033[0m"
     sudo apt install stow
 fi
 
+# Deploy a proxy to this script to bin/e
+mkdir -p $EVERYTHING_PATH/bin
+echo "#!/bin/bash" > $EVERYTHING_PATH/bin/e
+echo "cd $EVERYTHING_PATH; exec ./everything.sh \"\$@\"" >> $EVERYTHING_PATH/bin/e
+chmod +x $EVERYTHING_PATH/bin/e
+
 function backup_conflicts {
     mkdir -p backups
     for filename in $1; do
-        # TODO: This seemed to be backing up the original files from some symlinks. It should just remove symlinks instead.
         if [[ -L $HOME_PATH/$filename ]]; then
             echo "Removing symlink $HOME_PATH/$filename"
             rm "$HOME_PATH/$filename"
@@ -43,6 +50,62 @@ function restore_conflicts {
     rm -r backups
 }
 
+function module_script {
+    module=$1
+    script=$2
+    output=$( cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./$script.sh )
+    return $?
+}
+
+function update_module_line {
+    module_line=$1
+    module=$2
+    character=$3
+    sed -i "s/$module_line/$character$module/g" $EVERYTHING_PATH/modules.list
+}
+
+function enable_module {
+    module=$1
+    [[ -x "modules/$module/enable.sh" ]] || (echo "Could not find module (enable): $module" && return 1)
+    module_script $module "enable" || (echo "Failed to enable module: $module" && return 2)
+    module_script $module "verify" || (echo "Enabled module, but verify failed: $module" && return 3)
+}
+
+function disable_module {
+    module=$1
+    [[ -x "modules/$module/disable.sh" ]] || (echo "Could not find module (disable): $module" && return 1)
+    module_script $module "disable" || (echo "Failed to disable module: $module" && return 2)
+    module_script $module "verify" && echo "Disabled module, but verify claims still enabled: $module" && return 3
+}
+
+function verify_module {
+    module=$1
+    [[ -x "modules/$module/verify.sh" ]] || (echo "Could not find module (verify): $module" && return 1)
+    module_script $module "verify" || (echo "Previously enabled module failed verify: $module" && return 2)
+}
+
+function process_module_line {
+    module_line=$1
+    first_character=${module_line::1}
+    if [[ $first_character == [-+?] ]]; then
+        module=${module_line:1}
+        if [[ $first_character == '-' ]]; then
+            disable_module $module || (update_module_line $module_line $module '?' && return 1)
+            update_module_line $module_line $module '#'
+        elif [[ $first_character == '+' ]]; then
+            enable_module $module || (update_module_line $module_line $module '?' && return 2)
+            update_module_line $module_line $module ''
+        else
+            echo "Module previously marked as requiring manual investigation: $module"
+            return 3
+        fi
+    else
+        module=$module_line
+        # Module line claims module is installed. Verify this and prefix with ? if not true.
+        verify_module $module_line || (update_module_line $module_line $module '?' && return 4)
+    fi
+}
+
 PACKAGES=""
 while IFS="" read -r package || [ -n "$package" ]
 do
@@ -64,90 +127,28 @@ do
     done < environments.list
 done < packages.list
 
-# Deploy a proxy to this script to bin/e
-mkdir -p $EVERYTHING_PATH/bin
-echo "#!/bin/bash" > $EVERYTHING_PATH/bin/e
-echo "cd $EVERYTHING_PATH; exec ./everything.sh \"\$@\"" >> $EVERYTHING_PATH/bin/e
-chmod +x $EVERYTHING_PATH/bin/e
-
-PATH=$EVERYTHING_PATH/bin:$HOME_PATH/.local/bin:$PATH
-
 STOW_ARGS="--restow --no-folding --override=.* --dir=$EVERYTHING_PATH/packages --target=$HOME_PATH --verbose $PACKAGES"
 
 if [ "$1" = "sync" ]; then
 
     # Look for conflicts with a dry-run of stow and backup if necessary
-    CONFLICTS=$(stow --simulate $STOW_ARGS 2>&1 | awk '!a[$0]++' | awk '/\* existing target is/ {print $NF}' | xargs)
-    if [[ -n "$CONFLICTS" ]]; then
-        echo "Found conflicts: $CONFLICTS"
+    conflicts=$(stow --simulate $STOW_ARGS 2>&1 | awk '!a[$0]++' | awk '/\* existing target is/ {print $NF}' | xargs)
+    if [[ -n "$conflicts" ]]; then
+        echo "Found conflicts: $conflicts"
         echo "Backing up conflicts"
-        backup_conflicts "$CONFLICTS"
+        backup_conflicts "$conflicts"
     fi
     
     echo "Deploying symlinks"
     stow $STOW_ARGS
 
-    # TODO: Split into functions and use + to enable, - to disable,
-    # ? for user intervention, '' for enabled, # for disabled and
-    # allow a force enable option to enable '' and +
-    MODULES=$(egrep -v '^#' $EVERYTHING_PATH/modules.list | xargs)
-    for module in $MODULES
+    module_lines=$(egrep -v '^#' $EVERYTHING_PATH/modules.list | xargs)
+    for module_line in $module_lines
     do
         echo ""
-        echo -e "\033[36m Processing module: $module\033[0m"
+        echo -e "\033[36m Processing module: $module_line\033[0m"
         echo ""
-        if [[ "${module::1}" == '-' ]]; then
-            if ! [[ -x "modules/${module/-/}/disable.sh" ]]; then
-                echo "Could not find module: $module"
-                continue
-            fi
-            # Package marked to be disabled. First verify installation.
-            VERIFY_OUTPUT=$( cd "modules/${module/-/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
-            if [[ $? == 0 ]]; then
-                # Disable module
-                DISABLE_OUTPUT=$( cd "modules/${module/-/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./disable.sh )
-
-                if [[ $? == 0 ]]; then
-                    # Verify it was disabled
-                    VERIFY_OUTPUT=$( cd "modules/${module/-/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
-                    if [[ $? == 0 ]]; then
-                        echo "Please manually check ${module/-/}. Disable reported success, but verify claims it's enabled."
-                        sed -i "s/$module/?${module/-/}/g" $EVERYTHING_PATH/modules.list
-                    else
-                        echo "SUCCESS (disable): ${module/-/}"
-                        sed -i "s/$module/#${module/-/}/g" $EVERYTHING_PATH/modules.list
-                    fi
-                else
-                    echo "FAILED (disable): ${module/-/}"
-                    echo $DISABLE_OUTPUT
-                fi
-            else
-                echo "Already disabled: ${module/-/}"
-                sed -i "s/$module/#${module/-/}/g" $EVERYTHING_PATH/modules.list
-            fi
-        elif [[ "${package::1}" == '?' ]]; then
-            echo "Pending manual check: ${module/-/}"
-        else
-            if ! [[ -x "modules/$module/enable.sh" ]]; then
-                echo "Could not find module: $module"
-                continue
-            fi
-            # Enable module
-            ENABLE_OUTPUT=$( cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./enable.sh )
-            if [[ $? == 0 ]]; then
-                # Verify it was enabled
-                VERIFY_OUTPUT=$( cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
-                if [[ $? == 0 ]]; then
-                    echo "SUCCESS (enable): $module"
-                else
-                    echo "Please manually check $module. Enable reported success, but verify claims it's disabled."
-                    sed -i "s/$module/?$module/g" $EVERYTHING_PATH/modules.list
-                fi
-            else
-                echo "FAILED (enable): $module"
-                echo $ENABLE_OUTPUT
-            fi
-        fi
+        process_module_line $module_line || (echo "Issues found. Please review modules.list and resolve lines marked with ?" && exit 1)
     done
 
 elif [ "$1" = "restore" ]; then

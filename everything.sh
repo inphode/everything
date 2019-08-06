@@ -93,6 +93,7 @@ if [ "$1" = "sync" ]; then
     MODULES=$(egrep -v '^#' $EVERYTHING_PATH/modules.list | xargs)
     for module in $MODULES
     do
+        echo ""
         echo -e "\033[36m Processing module: $module\033[0m"
         echo ""
         if [[ "${module::1}" == '-' ]]; then

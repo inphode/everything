@@ -139,17 +139,18 @@ if [ "$1" = "sync" ]; then
         backup_conflicts "$conflicts"
     fi
     
-    echo "Deploying symlinks"
+    echo ""
+    echo -e "\033[36m  Deploying symlinks:\033[0m\n"
     stow $STOW_ARGS
 
     module_lines=$(egrep -v '^#' $EVERYTHING_PATH/modules.list | xargs)
     for module_line in $module_lines
     do
         echo ""
-        echo -e "\033[36m Processing module: $module_line\033[0m"
-        echo ""
+        echo -e "\033[36m  Processing module: $module_line\033[0m"
         process_module_line $module_line || (echo "Issues found. Please review modules.list and resolve lines marked with ?" && exit 1)
     done
+    echo ""
 
 elif [ "$1" = "restore" ]; then
 
@@ -157,11 +158,17 @@ elif [ "$1" = "restore" ]; then
 
 else
 
+    echo ""
+    echo -e "\033[36m  Stow actions simulated:\033[0m\n"
     echo stow --simulate $STOW_ARGS
     stow --simulate $STOW_ARGS
     echo ""
-    echo -e "\033[36m Stow actions simulated.\033[0m\n"
-    echo -e "\033[36m Run '$0 sync' to sync packages and modules.\033[0m"
+    echo -e "\033[36m  Module status:\033[0m\n"
+    cat $EVERYTHING_PATH/modules.list
+    echo ""
+    echo -e "\033[36m  No action taken.\033[0m"
+    echo -e "\033[36m  Run '$0 sync' to sync packages and modules.\033[0m"
+    echo ""
 
 fi
 

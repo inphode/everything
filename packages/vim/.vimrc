@@ -105,6 +105,8 @@ set laststatus=2
 set ruler
 " Display command line’s tab complete options as a menu
 set wildmenu
+" Vertical auto complete menu (seems to be enabled by default
+"set wildoptions+=pum
 " Maximum number of tab pages that can be opened from the command line
 set tabpagemax=50
 " Highlight the line currently under cursor

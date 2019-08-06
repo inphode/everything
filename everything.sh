@@ -96,17 +96,20 @@ if [ "$1" = "sync" ]; then
         echo -e "\033[36m Processing module: $module\033[0m"
         echo ""
         if [[ "${module::1}" == '!' ]]; then
-            [[ -x "modules/${module/!/}/disable.sh" ]] || echo "Could not find module: ${module/!/}" && continue
+            if ! [[ -x "modules/${module/!/}/disable.sh" ]]; then
+                echo "Could not find module: $module"
+                continue
+            fi
             # Package marked to be disabled. First verify installation.
             VERIFY_OUTPUT=$( cd "modules/${module/!/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
-            if [[ $? ]]; then
+            if [[ $? == 0 ]]; then
                 # Disable module
                 DISABLE_OUTPUT=$( cd "modules/${module/!/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./disable.sh )
 
-                if [[ $? ]]; then
+                if [[ $? == 0 ]]; then
                     # Verify it was disabled
                     VERIFY_OUTPUT=$( cd "modules/${module/!/}"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
-                    if [[ $? ]]; then
+                    if [[ $? == 0 ]]; then
                         echo "Please manually check ${module/!/}. Disable reported success, but verify claims it's enabled."
                         sed -i "s/$module/?${module/!/}/g" $EVERYTHING_PATH/modules.list
                     else
@@ -124,13 +127,16 @@ if [ "$1" = "sync" ]; then
         elif [[ "${package::1}" == '?' ]]; then
             echo "Pending manual check: ${module/!/}"
         else
-            [[ -x "modules/$module/enable.sh" ]] || echo "Could not find module: $module" && continue
+            if ! [[ -x "modules/$module/enable.sh" ]]; then
+                echo "Could not find module: $module"
+                continue
+            fi
             # Enable module
             ENABLE_OUTPUT=$( cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./enable.sh )
-            if [[ $? ]]; then
+            if [[ $? == 0 ]]; then
                 # Verify it was enabled
                 VERIFY_OUTPUT=$( cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./verify.sh )
-                if [[ $? ]]; then
+                if [[ $? == 0 ]]; then
                     echo "SUCCESS (enable): $module"
                 else
                     echo "Please manually check $module. Enable reported success, but verify claims it's disabled."

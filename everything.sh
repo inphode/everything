@@ -153,29 +153,6 @@ elif [ "$1" = "restore" ]; then
 
     restore_conflicts
 
-elif [ "$1" = "apply" ]; then
-    stow $STOW_ARGS
-    for package in $PACKAGES
-    do
-        echo -e "\033[36m Looking for packages/$package/setup/always.sh\033[0m"
-        test -x "packages/$package/setup/always.sh" || continue
-        echo -e "\033[36m Found. Running...\033[0m\n"
-        ( cd "packages/$package/setup" && eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) ./always.sh )
-        echo ""
-    done
-elif [ "$1" = "init" ]; then
-    stow $STOW_ARGS
-    echo -e "\033[36m Initialising everything...\033[0m\n"
-    ( eval $(egrep -v '^#' .env | xargs) FROM_SYNC=1 ./init.sh )
-    echo ""
-    for package in $PACKAGES
-    do
-        echo -e "\033[36m Looking for packages/$package/setup/once.sh\033[0m"
-        test -x "packages/$package/setup/once.sh" || continue
-        echo -e "\033[36m Found. Running...\033[0m\n"
-        ( cd "packages/$package/setup" && eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) ./once.sh )
-        echo ""
-    done
 else
     echo stow --simulate $STOW_ARGS
     stow --simulate $STOW_ARGS

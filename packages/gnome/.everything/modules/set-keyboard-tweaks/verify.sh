@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source ../../utils.sh
+iamatest
+
 # Check keyboard tweaks (CAPS LOCK as CTRL and both SHIFT as CAPS LOCK)
 OUTPUT=$(gsettings get org.gnome.desktop.input-sources xkb-options)
 

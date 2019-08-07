@@ -53,8 +53,14 @@ function restore_conflicts {
 function module_script {
     module=$1
     script=$2
-    output=$( cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./$script.sh )
-    return $?
+    output=$( source utils.sh; cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./$script.sh )
+    result=$?
+    if [[ $VERBOSE ]]; then
+        echo ""
+        echo -e "\033[93m $script output:\033[0m"
+        echo "$output"
+    fi
+    return $result
 }
 
 function update_module_line {

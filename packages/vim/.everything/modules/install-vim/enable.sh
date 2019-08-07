@@ -9,9 +9,14 @@ curl -fLo $HOME_PATH/.local/bin/nvim --create-dirs \
     https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
 chmod u+x $HOME_PATH/.local/bin/nvim
 
-sudo apt install python3-pip universal-ctags ripgrep -y
+npm install -g neovim
+
+sudo apt install ruby ruby-dev python2-pip python3-pip universal-ctags ripgrep -y
+pip2 install --user --upgrade neovim
 pip3 install --user --upgrade neovim
 pip3 install --user --upgrade neovim-remote
+
+sudo gem install neovim
 
 # Install vim-plug
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \

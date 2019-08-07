@@ -50,10 +50,8 @@ function restore_conflicts {
     rm -r backups
 }
 
-function module_script {
-    module=$1
-    script=$2
-    output=$( source utils.sh; cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./$script.sh )
+function module_script { module=$1; script=$2
+    output=$( cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./$script.sh )
     result=$?
     if [[ $VERBOSE ]]; then
         echo ""
@@ -63,35 +61,34 @@ function module_script {
     return $result
 }
 
-function update_module_line {
-    module_line=$1
-    module=$2
-    character=$3
-    sed -i "s/$module_line/$character$module/g" $EVERYTHING_PATH/modules.list
+function update_module_line { module_line=$1; module=$2; character=$3
+    sed -i "s/^$module_line$/$character$module/g" $EVERYTHING_PATH/modules.list
 }
 
-function enable_module {
-    module=$1
+function enable_module { module=$1
     [[ -x "modules/$module/enable.sh" ]] || (echo "Could not find module (enable): $module" && return 1)
     module_script $module "enable" || (echo "Failed to enable module: $module" && return 2)
     module_script $module "verify" || (echo "Enabled module, but verify failed: $module" && return 3)
 }
 
-function disable_module {
-    module=$1
+function disable_module { module=$1
     [[ -x "modules/$module/disable.sh" ]] || (echo "Could not find module (disable): $module" && return 1)
     module_script $module "disable" || (echo "Failed to disable module: $module" && return 2)
-    module_script $module "verify" && echo "Disabled module, but verify claims still enabled: $module" && return 3
+    module_script $module "verify" && (echo "Disabled module, but verify claims still enabled: $module" && return 3)
+    # Verify returning false means success in this case
+    if [[ $? -ne 0 ]]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
-function verify_module {
-    module=$1
+function verify_module { module=$1
     [[ -x "modules/$module/verify.sh" ]] || (echo "Could not find module (verify): $module" && return 1)
     module_script $module "verify" || (echo "Previously enabled module failed verify: $module" && return 2)
 }
 
-function process_module_line {
-    module_line=$1
+function process_module_line { module_line=$1
     first_character=${module_line::1}
     if [[ $first_character == [-+?] ]]; then
         module=${module_line:1}

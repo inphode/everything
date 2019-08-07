@@ -51,7 +51,7 @@ function restore_conflicts {
 }
 
 function module_script { module=$1; script=$2
-    output=$( cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./$script.sh )
+    output=$( source lib/verify.sh; cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./$script.sh )
     result=$?
     if [[ $VERBOSE ]]; then
         echo ""

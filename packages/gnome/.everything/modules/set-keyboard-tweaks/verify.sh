@@ -1,25 +1,17 @@
 #!/bin/bash
 
 # Check keyboard tweaks (CAPS LOCK as CTRL and both SHIFT as CAPS LOCK)
-OUTPUT=$(gsettings get org.gnome.desktop.input-sources xkb-options)
-
-if [[ ! $OUTPUT =~ "['shift:both_capslock', 'ctrl:nocaps', 'terminate:ctrl_alt_bksp']" ]]; then
-    exit 2
-fi
-
+verify_command_contains \
+    "['shift:both_capslock', 'ctrl:nocaps', 'terminate:ctrl_alt_bksp']" \
+    gsettings get org.gnome.desktop.input-sources xkb-options
 # Check key repeat delay
-OUTPUT=$(gsettings get org.gnome.desktop.peripherals.keyboard delay)
-
-if [[ ! $OUTPUT =~ "uint32 300"$ ]]; then
-    exit 3
-fi
-
+verify_command_matches \
+    "uint32 300"$ \
+    gsettings get org.gnome.desktop.peripherals.keyboard delay
 # Check key repeat speed
-OUTPUT=$(gsettings get org.gnome.desktop.peripherals.keyboard repeat-interval)
+verify_command_matches \
+    "uint32 30"$ \
+    gsettings get org.gnome.desktop.peripherals.keyboard repeat-interval
 
-if [[ ! $OUTPUT =~ "uint32 30"$ ]]; then
-    exit 4
-fi
-
-exit 0
+exit $REPORT_ENABLED
 

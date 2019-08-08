@@ -140,3 +140,28 @@ export NVM_DIR="$HOME/.config/nvm"
 
 # FZF bash integration
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Track which scripts are sourced
+SOURCED=$HOME/.bashrc
+# Allow sourcing scripts only if they don't appear in $SOURCED
+# Files without '/' are assumed to be in $HOME/.bashrc.d
+function source_once {
+    for x in $SOURCED
+    do
+        [[ $1 == $x ]] && return
+    done
+    if [[ $1 =~ "/" ]]; then
+        . $1
+    else
+        . $HOME/.bashrc.d/$1
+    fi
+}
+# Source bash files in .bashrc.d directory
+if [ -d $HOME/.bashrc.d ]; then
+    for x in $HOME/.bashrc.d/* ; do
+        test -x "$x" || continue
+        . "$x"
+        SOURCED+=" $x"
+    done
+    export SOURCED
+fi

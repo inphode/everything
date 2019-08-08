@@ -151,12 +151,12 @@ function source_once {
         [[ $1 == $x ]] && return
     done
     if [[ $1 =~ "/" ]]; then
-        . $1
-        SOURCED+=" $1"
+        $source_file=$1
     else
-        . $HOME/.bashrc.d/$1
-        SOURCED+=" $HOME/.bashrc.d/$1"
+        $source_file=$HOME/.bashrc.d/$1
     fi
+    . $source_file
+    SOURCED+=" $source_file"
 }
 # Source bash files in .bashrc.d directory
 if [ -d $HOME/.bashrc.d ]; then

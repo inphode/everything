@@ -150,7 +150,9 @@ set nrformats-=octal
 " Map leader key to space
 let mapleader=" "
 nnoremap <SPACE> <Nop>
-" Highlight last inserted text
+" Highlight last changed test
+nnoremap gp `[v`]
+" Highlight last changed text in line selection mode
 nnoremap gV `[v`]
 " turn off search highlight
 nnoremap <leader>s :nohlsearch<CR>

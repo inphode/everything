@@ -132,7 +132,16 @@ done < packages.list
 
 STOW_ARGS="--restow --no-folding --override=.* --dir=$EVERYTHING_PATH/packages --target=$HOME_PATH --verbose $PACKAGES"
 
-if [ "$1" = "sync" ]; then
+# Source library functions
+. $EVERYTHING_PATH/lib/module.sh
+. $EVERYTHING_PATH/lib/verify.sh
+. $EVERYTHING_PATH/lib/command.sh
+
+if [ "$1" = "sandbox" ]; then
+
+    command_sandbox $@
+
+elif [ "$1" = "sync" ]; then
 
     # Look for conflicts with a dry-run of stow and backup if necessary
     conflicts=$(stow --simulate $STOW_ARGS 2>&1 | awk '!a[$0]++' | awk '/\* existing target is/ {print $NF}' | xargs)

@@ -12,25 +12,34 @@ if [[ -z $MODULE_LIST ]]; then
 fi
 
 function module_verify {
+    echo ""
 }
 
 function module_enable {
+    echo ""
 }
 
 function module_verify_enable {
+    echo ""
 }
 
 function module_disable {
+    echo ""
 }
 
 function module_verify_disable {
+    echo ""
 }
 
 function module_sync {
+    echo "args passed to module_sync: $@"
+    return 1
 }
 
-function module_sync_all { $options=$@
-    force=$([[ $options =~ "force" ]] && echo 1)
+function module_sync_all { options=$@
+    force=$(option_flag "force" 1 0 $@)
+
+    echo "force = $force"
 
     for module_line in $MODULE_LIST
     do

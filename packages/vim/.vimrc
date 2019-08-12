@@ -2,12 +2,9 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
 " Insert plugins here:
-"Plug 'morhetz/gruvbox'
-"Plug 'ayu-theme/ayu-vim'
 Plug 'fenetikm/falcon'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-"Plug 'ludovicchabant/vim-gutentags'
 Plug 'easymotion/vim-easymotion'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -22,19 +19,20 @@ Plug 'tpope/vim-repeat'
 Plug 'vim-vdebug/vdebug'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'justinmk/vim-sneak'
 
 " Initialize plugin system
 call plug#end()
 
 " Adds a DiffSaved command for seeing a diff of changes since last save
-function! s:DiffWithSaved()
+function! s:DiffUnsavedChanges()
   let filetype=&ft
   diffthis
   vnew | r # | normal! 1Gdd
   diffthis
   exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
-com! DiffSaved call s:DiffWithSaved()
+com! DiffUnsavedChanges call s:DiffWithSaved()
 
 " -- Indentation options
 " New lines inherit the indentation of previous lines
@@ -158,6 +156,10 @@ nnoremap gV `[v`]
 nnoremap <leader>s :nohlsearch<CR>
 
 " -- Plugin options
+" EasyMotion
+" gs{char}{char} to move to {char}{char} over windows
+nmap gs <Plug>(easymotion-overwin-f2)
+
 " Startify
 " When opening a file or bookmark, don't change to its directory
 let g:startify_change_to_dir = 0

@@ -18,6 +18,9 @@ export SERIAL=$(date +%s)
 if ! [ -f "$EVERYTHING_PATH/.env" ]; then
     echo -e "\033[36m .env file not found. Copying example - please review and re-run.\033[0m"
     cp "$EVERYTHING_PATH/examples/.env.example" "$EVERYTHING_PATH/.env"
+    cp "$EVERYTHING_PATH/examples/environments.list.example" "$EVERYTHING_PATH/environments.list"
+    cp "$EVERYTHING_PATH/examples/packages.list.example" "$EVERYTHING_PATH/packages.list"
+    cp "$EVERYTHING_PATH/examples/modules.list.example" "$EVERYTHING_PATH/modules.list"
     exit 1
 fi
 

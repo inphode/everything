@@ -1,19 +1,26 @@
 # Everything
 
-Scripts, dotfiles and other stuff for restoring and maintaining config and notes between systems.
+Manage configuration between multiple systems and environments.
 
-## Setup
+Currently has limited use to anyone except myself, but could be stripped back and used by anyone willing to read through and understand the bash scripts that make this up.
 
-Set up file synchronisation via Google Drive, Dropbox or similar.
+## Requirements
 
-Set up a secure directory (ideally encrypted) containing sensitive data such as SSH keys.
+- Ubuntu 19.04 (The eventual intention is to make this work on a wide variety of systems)
+- curl package (`sudo apt install curl`)
+- Currently hard-coded to install into `~/.everything`
 
-Copy `.env.example` to `.env` and customise as needed (setting the paths for the above directories).
+## Installation
 
-Run `./everything.sh init`.
+1. Check requirements are met
+2. Run `sh -c "$(curl -sSL everything.run)"` in a terminal
+3. Follow instructions displayed in terminal
 
-This will install an `everything` executable to your `~/bin` directory.
+## Usage
 
-## Updates
+Run `./everything.sh` to initialise, create directories and see status.
 
-Run `everything`, followed by `everything apply` after inspecting changes.
+Run `./everything.sh sync` to synchronise packages and modules.
+
+View the contents of `everything.sh` for other available commands.
+

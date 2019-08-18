@@ -139,11 +139,12 @@ elif [[ "$1" = "restore" || "$1" = "r" ]]; then
 else
 
     # TODO: move to command_status
-    echo -e "\033[36m  Environment status:\033[0m\n"
+    echo_heading "Status overview"
+    echo_subheading "environments.list"
     cat "$EVERYTHING_PATH/environments.list"
-    echo -e "\033[36m  Package status:\033[0m\n"
+    echo_subheading "packages.list"
     cat "$EVERYTHING_PATH/packages.list"
-    echo -e "\033[36m  Module status:\033[0m\n"
+    echo_subheading "modules.list"
     cat "$EVERYTHING_PATH/modules.list"
 
 fi

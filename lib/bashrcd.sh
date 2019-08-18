@@ -28,7 +28,7 @@ function bashrcd_install {
 }
 
 function bashrcd_disable { script=$1
-    rm -f "$BASHRCD_PATH/*.$script.bash"
+    rm -f "$BASHRCD_PATH/"*".$script.bash"
     rm -f "$BASHRCD_PATH/$script.bash"
 }
 

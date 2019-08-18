@@ -10,4 +10,5 @@ local-packages/
 .vscode/
 *.code-workspace
 tags
+Session.vim
 

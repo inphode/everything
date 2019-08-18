@@ -1,186 +1,150 @@
 #!/bin/bash
 
-# TODO: Check for curl, git, packages.list, modules.list, environments.list
+# TODO: Check for whiptail, curl, git, packages.list, modules.list, environments.list
+# Allow interactive selection of environments, packages and modules.
+# Provide some preset sensible default lists.
 
-if ! [ -f ".env" ]; then
+# Get directory of script (even through symlinks)
+export EVERYTHING_PATH="$(dirname "$(readlink -f "$0")")"
+
+# Using a new variable for home directory to make custom target directories
+# easier to implement in future.
+export HOME_PATH="$HOME"
+
+# A unique serial to identify this execution (for use in logs and backups)
+export SERIAL=$(date +%s)
+
+# Check for .env file and copy example if it doesn't exist
+if ! [ -f "$EVERYTHING_PATH/.env" ]; then
     echo -e "\033[36m .env file not found. Copying example - please review and re-run.\033[0m"
-    cp .env.example .env
+    cp "$EVERYTHING_PATH/examples/.env.example" "$EVERYTHING_PATH/.env"
     exit 1
 fi
 
-source .env
+# Source the user's .env file
+set -a
+. "$EVERYTHING_PATH/.env"
+set +a
 
-PATH=$EVERYTHING_PATH/bin:$HOME_PATH/.local/bin:$PATH
-
+# Ensure stow is installed
 if ! [ -x "$(command -v stow)" ]; then
     echo -e "\033[36m stow command not found. Installing now...\033[0m"
     sudo apt install stow
 fi
 
-# Deploy a proxy to this script to bin/e
-mkdir -p $EVERYTHING_PATH/bin
-echo "#!/bin/bash" > $EVERYTHING_PATH/bin/e
-echo "cd $EVERYTHING_PATH; exec ./everything.sh \"\$@\"" >> $EVERYTHING_PATH/bin/e
-chmod +x $EVERYTHING_PATH/bin/e
+# Create and add required bin directories to path
+mkdir -p "$EVERYTHING_PATH/bin"
+mkdir -p "$HOME_PATH/.local/bin"
+export PATH="$EVERYTHING_PATH/bin:$HOME_PATH/.local/bin:$PATH"
 
-function backup_conflicts {
-    mkdir -p backups
-    for filename in $1; do
-        if [[ -L $HOME_PATH/$filename ]]; then
-            echo "Removing symlink $HOME_PATH/$filename"
-            rm "$HOME_PATH/$filename"
-        elif [[ -f $HOME_PATH/$filename ]]; then
-            echo "Backing up file $HOME_PATH/$filename"
-            mkdir -p "backups/${filename%${filename##*/}}"
-            mv "$HOME_PATH/$filename" "backups/$filename"
-        fi
-    done
-}
-
-function restore_conflicts {
-    if [[ -d backups ]]; then
-        for filename in $(cd backups; find . -type f -print | sed 's#./##' | xargs); do
-            echo "Restoring backup $HOME_PATH/$filename"
-            if [[ -h $HOME_PATH/$filename ]]; then
-                rm "$HOME_PATH/$filename"
-            fi
-            mv "backups/$filename" "$HOME_PATH/$filename"
-        done
-    fi
-    rm -r backups
-}
-
-function module_script { module=$1; script=$2
-    output=$( source lib/verify.sh; cd "modules/$module"; eval $(egrep -v '^#' $EVERYTHING_PATH/.env | xargs) PATH=$PATH ./$script.sh )
-    result=$?
-    if [[ $VERBOSE ]]; then
-        echo ""
-        echo -e "\033[93m $script output:\033[0m"
-        echo "$output"
-    fi
-    return $result
-}
-
-function update_module_line { module_line=$1; module=$2; character=$3
-    sed -i "s/^$module_line$/$character$module/g" $EVERYTHING_PATH/modules.list
-}
-
-function enable_module { module=$1
-    [[ -x "modules/$module/enable.sh" ]] || (echo "Could not find module (enable): $module" && return 1)
-    module_script $module "enable" || (echo "Failed to enable module: $module" && return 2)
-    module_script $module "verify" || (echo "Enabled module, but verify failed: $module" && return 3)
-}
-
-function disable_module { module=$1
-    [[ -x "modules/$module/disable.sh" ]] || (echo "Could not find module (disable): $module" && return 1)
-    module_script $module "disable" || (echo "Failed to disable module: $module" && return 2)
-    module_script $module "verify" && (echo "Disabled module, but verify claims still enabled: $module" && return 3)
-    # Verify returning false means success in this case
-    if [[ $? -ne 0 ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-function verify_module { module=$1
-    [[ -x "modules/$module/verify.sh" ]] || (echo "Could not find module (verify): $module" && return 1)
-    module_script $module "verify" || (echo "Previously enabled module failed verify: $module" && return 2)
-}
-
-function process_module_line { module_line=$1
-    first_character=${module_line::1}
-    if [[ $first_character == [-+?] ]]; then
-        module=${module_line:1}
-        if [[ $first_character == '-' ]]; then
-            disable_module $module || (update_module_line $module_line $module '?' && return 1)
-            update_module_line $module_line $module '#'
-        elif [[ $first_character == '+' ]]; then
-            enable_module $module || (update_module_line $module_line $module '?' && return 2)
-            update_module_line $module_line $module ''
-        else
-            echo "Module previously marked as requiring manual investigation: $module"
-            return 3
-        fi
-    else
-        module=$module_line
-        # Module line claims module is installed. Verify this and prefix with ? if not true.
-        verify_module $module_line || (update_module_line $module_line $module '?' && return 4)
-    fi
-}
-
-PACKAGES=""
-while IFS="" read -r package || [ -n "$package" ]
-do
-    # Skip empty lines
-    [[ -z "$package" ]] && continue
-    # Skip lines starting with '#'
-    [[ "${package::1}" == '#' ]] && continue
-    # If the package directory exists
-    if [[ -d $EVERYTHING_PATH/packages/$package ]]; then
-        PACKAGES+=" $package"
-    fi
-    # For each of the environments listed in 'environments.list'
-    while IFS="" read -r environment || [ -n "$environment" ]
-    do
-        # If environment is not empty and the package.environment directory exists
-        if [[ -n "$environment" ]] && [[ -d $EVERYTHING_PATH/packages/$package.$environment ]]; then
-            PACKAGES+=" $package.$environment"
-        fi
-    done < environments.list
-done < packages.list
-
-STOW_ARGS="--restow --no-folding --override=.* --dir=$EVERYTHING_PATH/packages --target=$HOME_PATH --verbose $PACKAGES"
+# Deploy a symlink to bin path location
+if ! [[ -e "$EVERYTHING_PATH/bin/$EVERYTHING_BIN" ]]; then
+    ln -s "$EVERYTHING_PATH/everything.sh" "$EVERYTHING_PATH/bin/$EVERYTHING_BIN"
+fi
 
 # Source library functions
-. $EVERYTHING_PATH/lib/module.sh
-. $EVERYTHING_PATH/lib/verify.sh
-. $EVERYTHING_PATH/lib/command.sh
+. "$EVERYTHING_PATH/lib/output.sh"
+. "$EVERYTHING_PATH/lib/package.sh"
+. "$EVERYTHING_PATH/lib/module.sh"
+. "$EVERYTHING_PATH/lib/verify.sh"
+. "$EVERYTHING_PATH/lib/command.sh"
 
-if [ "$1" = "sandbox" ]; then
+if [[ "$1" = "sync" || "$1" = "s" ]]; then
 
-    command_sandbox $@
+    shift
+    command_sync $@
 
-elif [ "$1" = "sync" ]; then
+elif [[ "$1" = "package" || "$1" = "p" ]]; then
 
-    # Look for conflicts with a dry-run of stow and backup if necessary
-    conflicts=$(stow --simulate $STOW_ARGS 2>&1 | awk '!a[$0]++' | awk '/\* existing target is/ {print $NF}' | xargs)
-    if [[ -n "$conflicts" ]]; then
-        echo "Found conflicts: $conflicts"
-        echo "Backing up conflicts"
-        backup_conflicts "$conflicts"
+    shift
+
+    if [[ "$1" = "sync" || "$1" = "s" ]]; then
+
+        shift
+        command_package_sync $@
+
+    elif [[ "$1" = "add" || "$1" = "a" ]]; then
+
+        shift
+        command_package_add $@
+
+    elif [[ "$1" = "remove" || "$1" = "r" ]]; then
+
+        shift
+        command_package_remove $@
+
+    else
+
+        # TODO: echo package info/help
+        command_package_status
+
     fi
-    
-    echo ""
-    echo -e "\033[36m  Deploying symlinks:\033[0m\n"
-    stow $STOW_ARGS
 
-    module_lines=$(egrep -v '^#' $EVERYTHING_PATH/modules.list | xargs)
-    for module_line in $module_lines
-    do
-        echo ""
-        echo -e "\033[36m  Processing module: $module_line\033[0m"
-        process_module_line $module_line || (echo "Issues found. Please review modules.list and resolve lines marked with ?" && exit 1)
-    done
-    echo ""
+elif [[ "$1" = "module" || "$1" = "m" ]]; then
 
-elif [ "$1" = "restore" ]; then
+    shift
 
-    restore_conflicts
+    if [[ "$1" = "sync" || "$1" = "s" ]]; then
+
+        shift
+        command_module_sync $@
+
+    elif [[ "$1" = "add" || "$1" = "a" ]]; then
+
+        shift
+        command_module_add $@
+
+    elif [[ "$1" = "remove" || "$1" = "r" ]]; then
+
+        shift
+        command_module_remove $@
+
+    elif [[ "$1" = "enable" || "$1" = "e" ]]; then
+
+        shift
+        command_module_enable $@
+
+    elif [[ "$1" = "disable" || "$1" = "d" ]]; then
+
+        shift
+        command_module_disable $@
+
+    elif [[ "$1" = "choose" || "$1" = "c" ]]; then
+
+        shift
+        command_module_choose
+
+    elif [[ "$1" = "new" || "$1" = "n" ]]; then
+
+        shift
+        command_module_new $@
+
+    elif [[ "$1" = "modify" || "$1" = "m" ]]; then
+
+        shift
+        command_module_modify $@
+
+    else
+
+        # TODO: echo module info/help
+        command_module_status
+
+    fi
+
+elif [[ "$1" = "restore" || "$1" = "r" ]]; then
+
+    shift
+    command_restore $@
 
 else
 
-    echo ""
-    echo -e "\033[36m  Stow actions simulated:\033[0m\n"
-    echo stow --simulate $STOW_ARGS
-    stow --simulate $STOW_ARGS
-    echo ""
+    # TODO: move to command_status
+    echo -e "\033[36m  Environment status:\033[0m\n"
+    cat "$EVERYTHING_PATH/environments.list"
+    echo -e "\033[36m  Package status:\033[0m\n"
+    cat "$EVERYTHING_PATH/packages.list"
     echo -e "\033[36m  Module status:\033[0m\n"
-    cat $EVERYTHING_PATH/modules.list
-    echo ""
-    echo -e "\033[36m  No action taken.\033[0m"
-    echo -e "\033[36m  Run '$0 sync' to sync packages and modules.\033[0m"
-    echo ""
+    cat "$EVERYTHING_PATH/modules.list"
 
 fi
 

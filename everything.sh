@@ -47,11 +47,15 @@ if ! [[ -e "$EVERYTHING_PATH/bin/$EVERYTHING_BIN" ]]; then
 fi
 
 # Source library functions
+. "$EVERYTHING_PATH/lib/bashrcd.sh"
 . "$EVERYTHING_PATH/lib/output.sh"
 . "$EVERYTHING_PATH/lib/package.sh"
 . "$EVERYTHING_PATH/lib/module.sh"
 . "$EVERYTHING_PATH/lib/verify.sh"
 . "$EVERYTHING_PATH/lib/command.sh"
+
+# Install bashrcd
+bashrcd_install
 
 if [[ "$1" = "sync" || "$1" = "s" ]]; then
 

@@ -139,6 +139,24 @@ function verify_content_not_contains {
     fi
 }
 
+function verify_bashrcd_enabled { script=$1
+    if ls "$BASHRCD_PATH/*.$script.bash" 1> /dev/null 2>&1; then
+        :
+    elif [[ "$BASHRCD_PATH/$script.bash" ]]; then
+        :
+    else
+        exit $RESULT_DISABLED
+    fi
+}
+
+function verify_bashrcd_disabled { script=$1
+    if ls "$BASHRCD_PATH/*.$script.bash" 1> /dev/null 2>&1; then
+        exit $RESULT_DISABLED
+    elif [[ "$BASHRCD_PATH/$script.bash" ]]; then
+        exit $RESULT_DISABLED
+    fi
+}
+
 # Turn off automatic variable/function export
 set +a
 

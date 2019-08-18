@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# TODO: Have the node package put this is a separate file to source
-NVM_DIR=$HOME_PATH/.config/nvm
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+bashrcd_source node
+nvm install --lts
 nvm use --lts
 
 curl -fLo $HOME_PATH/.local/bin/nvim --create-dirs \

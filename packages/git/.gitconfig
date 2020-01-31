@@ -5,3 +5,6 @@
 [core]
 	excludesfile = ~/.gitignore-global
 
+[alias]
+    dt = "!f() { nvim -p $(git diff --name-only $@) +\"tabdo Gdiff $@\" +tabfirst; }; f"
+

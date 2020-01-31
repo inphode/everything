@@ -1,6 +1,8 @@
 " Specify a directory for plugins
 call plug#begin('~/.local/share/nvim/plugged')
 
+" !kill -9 $(ps aux | grep vim$ | awk '{print $2}' | xargs)
+
 " Insert plugins here:
 Plug 'fenetikm/falcon'
 Plug 'scrooloose/nerdtree'
@@ -10,19 +12,35 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-signify'
-Plug 'mattn/emmet-vim'
 Plug 'mhinz/vim-startify'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jwalton512/vim-blade'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'vim-vdebug/vdebug'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'justinmk/vim-sneak'
+Plug 'kkoomen/vim-doge'
+Plug 'gcmt/taboo.vim'
+Plug 'axelf4/vim-strip-trailing-whitespace'
+Plug 'tpope/vim-commentary'
+Plug 'vim-vdebug/vdebug'
+"Plug 'puremourning/vimspector'
+Plug '~/git/vimbugger'
 
 " Initialize plugin system
 call plug#end()
+
+" Make PHP variables words including the $
+au FileType php set iskeyword+=$
+
+" alt+j, alt+k bindings for moving lines up and down
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
 
 " Adds a DiffSaved command for seeing a diff of changes since last save
 function! s:DiffUnsavedChanges()
@@ -156,6 +174,9 @@ nnoremap gV `[v`]
 nnoremap <leader>s :nohlsearch<CR>
 
 " -- Plugin options
+" Taboo
+" Make Taboo save tab names in session
+set sessionoptions+=tabpages,globals
 " EasyMotion
 " gs{char}{char} to move to {char}{char} over windows
 nmap gs <Plug>(easymotion-overwin-f2)
@@ -302,3 +323,8 @@ nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
 "nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document
 nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+
+" Vimbugger bindings
+nnoremap <leader>gs :VimbuggerStart<CR>
+nnoremap <leader>gS :VimbuggerStop<CR>
+nnoremap <leader>gb :VimbuggerBreakpoint<CR>

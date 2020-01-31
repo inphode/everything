@@ -16,6 +16,7 @@ sudo apt install ruby ruby-dev python-pip python3-pip universal-ctags ripgrep -y
 pip2 install --user --upgrade neovim
 pip3 install --user --upgrade neovim
 pip3 install --user --upgrade neovim-remote
+pip3 install --user --upgrade jedi
 
 sudo gem install neovim
 

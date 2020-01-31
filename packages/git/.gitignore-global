@@ -11,4 +11,5 @@ local-packages/
 *.code-workspace
 tags
 Session.vim
+*.hidden
 

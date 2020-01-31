@@ -25,5 +25,5 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 nvim +PlugInstall +qall > /dev/null
-nvim -c 'CocInstall -sync coc-json coc-html coc-tsserver coc-css coc-vetur coc-phpls coc-yaml coc-python coc-emmet coc-highlight coc-yank coc-git coc-texlab|q'
+nvim -c 'CocInstall -sync coc-json coc-html coc-tsserver coc-css coc-vetur coc-phpls coc-yaml coc-python coc-highlight coc-yank coc-git coc-texlab|q'
 

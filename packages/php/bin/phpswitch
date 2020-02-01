@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Trigger sudo password prompt
+sudo echo
+
+echo " Available installed PHP versions:"
+echo
+
+matchedCurrent=0
+matchedChoice=0
+
+currentPath=$(readlink -e /etc/alternatives/php)
+currentName=$(basename $currentPath)
+
+versions=$(sudo update-alternatives --list php)
+index=0
+for version in $versions; do
+    index=$((index + 1))
+    if [[ $currentPath == $version ]]; then
+        echo " $index) $version (current)"
+        matchedCurrent=1
+    else
+        echo " $index) $version"
+    fi
+done
+
+echo
+echo -n " Choose version (1-$index): "
+read -n 1 choice
+echo
+echo
+
+index=0
+for version in $versions; do
+    index=$((index + 1))
+    if [[ $choice == $index ]]; then
+        phpPath=$version
+        phpName=$(basename $phpPath)
+        matchedChoice=1
+    fi
+done
+
+if [[ $matchedCurrent == 0 ]]; then
+    echo " Misconfiguration error. Could not find current version."
+    exit
+fi
+
+if [[ $matchedChoice == 0 ]]; then
+    echo " Invalid choice. Please pick from one of the numbers shown."
+    exit
+fi
+
+if [[ $currentPath == $phpPath ]]; then
+    echo " Already using the chosen version."
+    exit
+fi
+
+sudo update-alternatives --set php $phpPath
+sudo service $currentName-fpm stop
+sudo systemctl disable $currentName-fpm.service
+sudo service $phpName-fpm start
+sudo systemctl enable $phpName-fpm.service
+echo
+echo " Now using:"
+echo
+php --version

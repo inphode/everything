@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# TODO: Check for whiptail, curl, git, packages.list, modules.list, environments.list
-# Allow interactive selection of environments, packages and modules.
-# Provide some preset sensible default lists.
-# Allow modules to trigger bashrc re-sourcing or pull env from a previous module.
+# TODO:
+# - Check for whiptail, curl, git
+# - Allow interactive selection of environments, packages and modules.
+# - Allow modules to trigger bashrc re-sourcing or pull env from a previous module.
 
 # Get directory of script (even through symlinks)
 export EVERYTHING_PATH="$(dirname "$(readlink -f "$0")")"
@@ -75,6 +75,7 @@ fi
 # Install bashrcd
 bashrcd_install
 
+# TODO: Use switch statement instead
 if [[ "$1" = "sync" || "$1" = "s" ]]; then
 
     shift

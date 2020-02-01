@@ -6,7 +6,7 @@ Currently has limited use to anyone except myself, but could be stripped back an
 
 ## Requirements
 
-- Ubuntu 19.04 (The eventual intention is to make this work on a wide variety of systems)
+- Debian-based distros (The eventual intention is to make this work on a wide variety of systems)
 - curl package (`sudo apt install curl`)
 - Currently hard-coded to install into `~/.everything`
 
@@ -23,4 +23,3 @@ Run `./everything.sh` to initialise, create directories and see status.
 Run `./everything.sh sync` to synchronise packages and modules.
 
 View the contents of `everything.sh` for other available commands.
-

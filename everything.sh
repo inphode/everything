@@ -19,9 +19,6 @@ export SERIAL=$(date +%s)
 if ! [ -f "$EVERYTHING_PATH/.env" ]; then
     echo -e "\033[36m .env file not found. Copying example - please review and re-run.\033[0m"
     cp "$EVERYTHING_PATH/examples/.env.example" "$EVERYTHING_PATH/.env"
-    cp "$EVERYTHING_PATH/examples/environments.list.example" "$EVERYTHING_PATH/environments.list"
-    cp "$EVERYTHING_PATH/examples/packages.list.example" "$EVERYTHING_PATH/packages.list"
-    cp "$EVERYTHING_PATH/examples/modules.list.example" "$EVERYTHING_PATH/modules.list"
     exit 1
 fi
 
@@ -29,6 +26,27 @@ fi
 set -a
 . "$EVERYTHING_PATH/.env"
 set +a
+
+# Check for *.list files, and copy from systems directory if they don't exist
+if ! [ -f "$EVERYTHING_PATH/environments.list" ] || \
+   ! [ -f "$EVERYTHING_PATH/packages.list" ] || \
+   ! [ -f "$EVERYTHING_PATH/modules.list" ]
+then
+    if [ -z "$SYSTEM" ]; then
+        echo -e "\031[36m You must either set SYSTEM .env or create *.list files.\031[0m"
+        exit 1
+    fi
+
+    if ! [ -d "$EVERYTHING_PATH/systems/$SYSTEM" ]; then
+        echo -e "\031[36m Could not find '$EVERYTHING_PATH/systems/$SYSTEM'.\031[0m"
+        exit 1
+    fi
+
+    echo -e "\033[36m Symlinking *.list files from '$EVERYTHING_PATH/systems/$SYSTEM'\033[0m"
+    ln -s "$EVERYTHING_PATH/systems/$SYSTEM/environments.list" "$EVERYTHING_PATH/environments.list"
+    ln -s "$EVERYTHING_PATH/systems/$SYSTEM/packages.list" "$EVERYTHING_PATH/packages.list"
+    ln -s "$EVERYTHING_PATH/systems/$SYSTEM/modules.list" "$EVERYTHING_PATH/modules.list"
+fi
 
 # Ensure stow is installed
 if ! [ -x "$(command -v stow)" ]; then

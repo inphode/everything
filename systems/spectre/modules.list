@@ -7,5 +7,6 @@
 #install-terminal
 #install-terminal-clipboard
 #install-node
-install-vim
-+install-touchpad
+#install-vim
+#install-touchpad
++enable-php-aliases

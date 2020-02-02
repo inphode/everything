@@ -42,6 +42,10 @@ inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
+" Make neovim handle escape to exit terminal mode (without affecting FZF)
+au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+au FileType fzf tunmap <buffer> <Esc>
+
 " Adds a DiffSaved command for seeing a diff of changes since last save
 function! s:DiffUnsavedChanges()
   let filetype=&ft

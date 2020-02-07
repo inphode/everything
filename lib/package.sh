@@ -113,6 +113,13 @@ function package_apply { packages=$@
     echo_subheading "Using packages: $packages"
     echo_debug "stow command: stow $STOW_ARGS $packages"
     output=$(stow $STOW_ARGS $packages 2>&1)
+    # TODO: If output contains 'All operations aborted.', we need to abandon the script
+    # WARNING! stowing php would cause conflicts:
+  # * existing target is not owned by stow: .bashrc.d/available/php-aliases.bash
+  # * existing target is not owned by stow: .everything/modules/enable-php-aliases/disable.sh
+  # * existing target is not owned by stow: .everything/modules/enable-php-aliases/enable.sh
+  # * existing target is not owned by stow: .everything/modules/enable-php-aliases/verify.sh
+# All operations aborted.
     echo_verbose "stow output: $output"
 }
 

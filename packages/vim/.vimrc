@@ -35,12 +35,16 @@ call plug#end()
 au FileType php set iskeyword+=$
 
 " alt+j, alt+k bindings for moving lines up and down
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
-inoremap <A-j> <Esc>:m .+1<CR>==gi
-inoremap <A-k> <Esc>:m .-2<CR>==gi
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
+" Disabled these, as they seem to add a delay to <Esc>
+"nnoremap <A-j> :m .+1<CR>==
+"nnoremap <A-k> :m .-2<CR>==
+"inoremap <A-j> <Esc>:m .+1<CR>==gi
+"inoremap <A-k> <Esc>:m .-2<CR>==gi
+"vnoremap <A-j> :m '>+1<CR>gv=gv
+"vnoremap <A-k> :m '<-2<CR>gv=gv
+"
+inoremap <C-l> <c-x><c-n>
+
 
 " Make neovim handle escape to exit terminal mode (without affecting FZF)
 au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>

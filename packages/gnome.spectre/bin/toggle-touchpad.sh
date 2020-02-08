@@ -18,6 +18,8 @@ else
     synclient ClickFinger3=2
     # Diable 3 finger tap middle mouse
     synclient TapButton3=0
+    # Diable 2 finger tap right mouse
+    synclient TapButton2=0
 fi
 
 # Old method:

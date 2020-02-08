@@ -45,7 +45,6 @@ au FileType php set iskeyword+=$
 "
 inoremap <C-l> <c-x><c-n>
 
-
 " Make neovim handle escape to exit terminal mode (without affecting FZF)
 au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
 au FileType fzf tunmap <buffer> <Esc>
@@ -218,7 +217,8 @@ let NERDTreeAutoDeleteBuffer = 1
 nmap <leader>f :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
 nmap <leader>/ :BLines<cr>|    " fuzzy find lines in the current file
 nmap <leader>b :Buffers<cr>|   " fuzzy find an open buffer
-nmap <leader>r :Rg |           " fuzzy find text in the working directory
+nmap <leader>r :Rg |           " fuzzy find text in the working directory (honours VCS ignore files)
+nmap <leader>R :RgAll |        " fuzzy find text in the working directory (ignoring VCS ignore files)
 nmap <leader>c :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
 nmap <leader>h :History:<cr>|  " fuzzy find Command history
 nmap <leader>e :History<cr>|   " fuzzy find v:oldfiles and open buffers
@@ -253,6 +253,9 @@ let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
 "
 "  call nvim_open_win(buf, v:true, opts)
 "endfunction
+
+"command! -bang -nargs=* FzfAll call fzf#vim#rg(<q-args>, '--skip-vcs-ignores', {'down': '~40%'})
+command! -bang -nargs=* RgAll call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case --no-ignore-vcs ".shellescape(<q-args>), 1, <bang>0)
 
 " Use rg as the find command to respect gitignore
 let $FZF_DEFAULT_COMMAND = 'rg --glob !/.git/ --hidden -l ""'
@@ -307,7 +310,7 @@ endfunction
 " Highlight symbol under cursor on CursorHold
 autocmd CursorHold * silent call CocActionAsync('highlight')
 " Remap for rename current word
-nmap <leader>R <Plug>(coc-rename)
+"nmap <leader>R <Plug>(coc-rename)
 " Remap for format selected region
 "xmap <leader>f  <Plug>(coc-format-selected)
 "nmap <leader>f  <Plug>(coc-format-selected)

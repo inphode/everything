@@ -230,25 +230,30 @@ let g:fzf_history_dir = '~/.local/share/fzf-history'
 "let g:fzf_layout = { 'window': '-tabnew' }
 "let g:fzf_layout = { 'window': '10new' }
 "let $FZF_DEFAULT_OPTS='--layout=reverse'
-let g:fzf_layout = { 'window': 'call FloatingFZF()' }
-function! FloatingFZF()
-  let buf = nvim_create_buf(v:false, v:true)
-  call setbufvar(buf, '&signcolumn', 'no')
 
-  let height = &lines - 8
-  let width = float2nr(&columns - (&columns * 2 / 10))
-  let col = float2nr((&columns - width) / 2)
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+"let $FZF_DEFAULT_OPTS='--preview "head -100 `echo {} | awk -F: \"{print $1}\"`"'
 
-  let opts = {
-        \ 'relative': 'editor',
-        \ 'row': 4,
-        \ 'col': col,
-        \ 'width': width,
-        \ 'height': height
-        \ }
+"let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+"function! FloatingFZF()
+"  let buf = nvim_create_buf(v:false, v:true)
+"  call setbufvar(buf, '&signcolumn', 'no')
+"
+"  let height = &lines - 8
+"  let width = float2nr(&columns - (&columns * 2 / 10))
+"  let col = float2nr((&columns - width) / 2)
+"
+"  let opts = {
+"        \ 'relative': 'editor',
+"        \ 'row': 4,
+"        \ 'col': col,
+"        \ 'width': width,
+"        \ 'height': height
+"        \ }
+"
+"  call nvim_open_win(buf, v:true, opts)
+"endfunction
 
-  call nvim_open_win(buf, v:true, opts)
-endfunction
 " Use rg as the find command to respect gitignore
 let $FZF_DEFAULT_COMMAND = 'rg --glob !/.git/ --hidden -l ""'
 

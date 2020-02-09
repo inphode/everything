@@ -19,14 +19,14 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'justinmk/vim-sneak'
+"Plug 'justinmk/vim-sneak'
 Plug 'kkoomen/vim-doge'
 Plug 'gcmt/taboo.vim'
 Plug 'axelf4/vim-strip-trailing-whitespace'
 Plug 'tpope/vim-commentary'
 Plug 'vim-vdebug/vdebug'
 "Plug 'puremourning/vimspector'
-Plug '~/git/vimbugger'
+"Plug '~/git/vimbugger'
 
 " Initialize plugin system
 call plug#end()
@@ -186,7 +186,7 @@ nnoremap <leader>s :nohlsearch<CR>
 set sessionoptions+=tabpages,globals
 " EasyMotion
 " gs{char}{char} to move to {char}{char} over windows
-nmap gs <Plug>(easymotion-overwin-f2)
+nmap s <Plug>(easymotion-overwin-f2)
 
 " Startify
 " When opening a file or bookmark, don't change to its directory
@@ -364,8 +364,10 @@ nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
 "nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document
 nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+"nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
+nnoremap <silent> <space>y  :<C-u>CocList yank<cr>
 
 " Vimbugger bindings
-nnoremap <leader>gs :VimbuggerStart<CR>
-nnoremap <leader>gS :VimbuggerStop<CR>
-nnoremap <leader>gb :VimbuggerBreakpoint<CR>
+"nnoremap <leader>gs :VimbuggerStart<CR>
+"nnoremap <leader>gS :VimbuggerStop<CR>
+"nnoremap <leader>gb :VimbuggerBreakpoint<CR>

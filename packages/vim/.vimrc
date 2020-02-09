@@ -217,7 +217,7 @@ let NERDTreeAutoDeleteBuffer = 1
 nmap <leader>f :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
 nmap <leader>/ :BLines<cr>|    " fuzzy find lines in the current file
 nmap <leader>b :Buffers<cr>|   " fuzzy find an open buffer
-nmap <leader>r :Rg |           " fuzzy find text in the working directory (honours VCS ignore files)
+nmap <leader>r :RgProject |    " fuzzy find text in the working directory (honours VCS ignore files)
 nmap <leader>R :RgAll |        " fuzzy find text in the working directory (ignoring VCS ignore files)
 nmap <leader>c :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
 nmap <leader>h :History:<cr>|  " fuzzy find Command history
@@ -255,10 +255,35 @@ let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
 "endfunction
 
 "command! -bang -nargs=* FzfAll call fzf#vim#rg(<q-args>, '--skip-vcs-ignores', {'down': '~40%'})
+command! -bang -nargs=* RgProject call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, <bang>0)
 command! -bang -nargs=* RgAll call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case --no-ignore-vcs ".shellescape(<q-args>), 1, <bang>0)
 
 " Use rg as the find command to respect gitignore
 let $FZF_DEFAULT_COMMAND = 'rg --glob !/.git/ --hidden -l ""'
+
+" When using `dd` in the quickfix list, remove the item from the quickfix list.
+function! RemoveQFItem()
+  let curqfidx = line('.') - 1
+  let qfall = getqflist()
+  call remove(qfall, curqfidx)
+  call setqflist(qfall, 'r')
+  execute curqfidx + 1 . "cfirst"
+  :copen
+endfunction
+:command! RemoveQFItem :call RemoveQFItem()
+" Use map <buffer> to only map dd in the quickfix window. Requires +localmap
+autocmd FileType qf map <buffer> dd :RemoveQFItem<cr>
+autocmd FileType qf map <buffer> <C-k> :cp<cr>:copen<cr>
+autocmd FileType qf map <buffer> <C-j> :cn<cr>:copen<cr>
+"nnoremap <buffer> <silent> dd
+"  \ <Cmd>call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r') <Bar> cc<CR>
+
+nmap <leader>q :cdo |  " perform command on each entry in the quickfix list
+nmap <leader>Q :cfdo | " perform command on each file in the quickfix list
+nmap [q :cp<cr>
+nmap ]q :cn<cr>
+nmap [Q :colder<cr>
+nmap ]Q :cnewer<cr>
 
 " coc.vim
 " Make syntax highlighting work for jsonc comments
@@ -320,7 +345,7 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " Remap for do codeAction of current line
 "nmap <leader>ac  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+"nmap <leader>qf  <Plug>(coc-fix-current)
 " Use <tab> for select selections ranges, needs server support, like: coc-tsserver, coc-python
 "nmap <silent> <TAB> <Plug>(coc-range-select)
 "xmap <silent> <TAB> <Plug>(coc-range-select)

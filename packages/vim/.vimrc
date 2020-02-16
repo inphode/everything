@@ -58,7 +58,7 @@ function! s:DiffUnsavedChanges()
   diffthis
   exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
-com! DiffUnsavedChanges call s:DiffWithSaved()
+com! DiffUnsavedChanges call s:DiffUnsavedChanges()
 
 " -- Indentation options
 " New lines inherit the indentation of previous lines

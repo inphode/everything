@@ -23,7 +23,7 @@ fi
 
 function bashrcd_install {
     mkdir -p "$BASHRCD_PATH"
-    sed -i '/# ---BASHRCD_MANAGED---DO_NOT_MODIFY---BEGIN/,/# ---BASHRCD_MANAGED---DO_NOT_MODIFY---END/c\' "$HOME/.bashrc"
+    sed -i --follow-symlinks '/# ---BASHRCD_MANAGED---DO_NOT_MODIFY---BEGIN/,/# ---BASHRCD_MANAGED---DO_NOT_MODIFY---END/c\' "$HOME/.bashrc"
     echo "$BASHRCD_CODE" >> "$HOME/.bashrc"
 }
 

@@ -32,7 +32,7 @@ function module_script { module=$1; script=$2
 }
 
 function module_update_line { module=$1; marker=$2
-    sed -i "s/^[$MODULE_MARKERS]*$module$/$marker$module/g" "$EVERYTHING_PATH/modules.list"
+    sed -i --follow-symlinks "s/^[$MODULE_MARKERS]*$module$/$marker$module/g" "$EVERYTHING_PATH/modules.list"
 }
 
 function module_verify { module=$1; marker=$2

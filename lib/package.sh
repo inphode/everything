@@ -16,7 +16,7 @@ fi
 function package_find_conflicts { packages=$@
     packages=$(package_list $@)
     # Look for conflicts with a dry-run of stow
-    stow --simulate $STOW_ARGS "$packages" 2>&1 |
+    stow --simulate $STOW_ARGS $packages 2>&1 |
         awk '!a[$0]++' |
         awk '/\* existing target is/ {print $NF}' |
         xargs
@@ -113,13 +113,10 @@ function package_apply { packages=$@
     echo_subheading "Using packages: $packages"
     echo_debug "stow command: stow $STOW_ARGS $packages"
     output=$(stow $STOW_ARGS $packages 2>&1)
-    # TODO: If output contains 'All operations aborted.', we need to abandon the script
-    # WARNING! stowing php would cause conflicts:
-  # * existing target is not owned by stow: .bashrc.d/available/php-aliases.bash
-  # * existing target is not owned by stow: .everything/modules/enable-php-aliases/disable.sh
-  # * existing target is not owned by stow: .everything/modules/enable-php-aliases/enable.sh
-  # * existing target is not owned by stow: .everything/modules/enable-php-aliases/verify.sh
-# All operations aborted.
+    if [[ "$output" =~ 'All operations aborted' ]]; then
+        echo_error "stow encountered an error. Please review the output: $output"
+        exit 1
+    fi
     echo_verbose "stow output: $output"
 }
 

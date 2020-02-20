@@ -26,6 +26,7 @@ Plug 'gcmt/taboo.vim'
 Plug 'axelf4/vim-strip-trailing-whitespace'
 Plug 'tpope/vim-commentary'
 Plug 'vim-vdebug/vdebug'
+Plug 'voldikss/vim-floaterm'
 "Plug 'puremourning/vimspector'
 "Plug '~/git/vimbugger'
 
@@ -285,6 +286,14 @@ nmap [q :cp<cr>
 nmap ]q :cn<cr>
 nmap [Q :colder<cr>
 nmap ]Q :cnewer<cr>
+
+" Floaterm
+command! Ranger FloatermNew ranger
+nnoremap <silent> <leader>g :Ranger<cr>
+let g:floaterm_keymap_toggle = '<leader>t'
+let g:floaterm_position = 'center'
+let g:floaterm_width = 0.8
+let g:floaterm_height = 0.8
 
 " coc.vim
 " Make syntax highlighting work for jsonc comments

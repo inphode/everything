@@ -4,6 +4,7 @@
 # - Check for whiptail, curl, git
 # - Allow interactive selection of environments, packages and modules.
 # - Allow modules to trigger bashrc re-sourcing or pull env from a previous module.
+# - Investigate 'set -o vi' for vi key bindings on the terminal
 
 # Get directory of script (even through symlinks)
 export EVERYTHING_PATH="$(dirname "$(readlink -f "$0")")"

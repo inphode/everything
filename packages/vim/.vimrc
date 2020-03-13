@@ -44,7 +44,8 @@ au FileType php set iskeyword+=$
 "inoremap <A-k> <Esc>:m .-2<CR>==gi
 "vnoremap <A-j> :m '>+1<CR>gv=gv
 "vnoremap <A-k> :m '<-2<CR>gv=gv
-"
+
+" Auto-complete from any anywhere
 inoremap <C-l> <c-x><c-n>
 
 " Make neovim handle escape to exit terminal mode (without affecting FZF)

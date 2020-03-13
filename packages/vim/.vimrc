@@ -46,7 +46,8 @@ au FileType php set iskeyword+=$
 "inoremap <A-k> <Esc>:m .-2<CR>==gi
 "vnoremap <A-j> :m '>+1<CR>gv=gv
 "vnoremap <A-k> :m '<-2<CR>gv=gv
-"
+
+" Auto-complete from any anywhere
 inoremap <C-l> <c-x><c-n>
 
 " Make neovim handle escape to exit terminal mode (without affecting FZF)
@@ -62,6 +63,10 @@ function! s:DiffUnsavedChanges()
   exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
 com! DiffUnsavedChanges call s:DiffUnsavedChanges()
+
+" Fixes issues with syntax highlighting getting messed up in cases of
+" large codeblocks.
+syntax sync minlines=10000
 
 " -- Indentation options
 " New lines inherit the indentation of previous lines

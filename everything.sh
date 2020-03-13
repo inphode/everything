@@ -154,6 +154,11 @@ elif [[ "$1" = "module" || "$1" = "m" ]]; then
         shift
         command_module_modify $@
 
+    elif [[ "$1" = "delete" ]]; then
+
+        shift
+        command_module_delete $@
+
     else
 
         # TODO: echo module info/help

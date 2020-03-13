@@ -55,6 +55,30 @@ function command_module_sync { modules=$@
 # package: package name of the package to create the module in
 # module: name of the module to be created
 function command_module_new { module=$2; package=$1
+    if [[ -z "$module" ]]; then
+        echo_error "You must specify a module name"
+        return 1
+    fi
+
+    if [[ -z "$package" ]]; then
+        echo_error "You must specify a package"
+        return 1
+    fi
+
+    module_dir="$EVERYTHING_PATH/packages/$package/.everything/modules/$module"
+
+    if [[ -d "$module_dir" ]]; then
+        echo_error "The module directory with the name specified ($module) exists already."
+        echo_error "Aborting"
+        return 1
+    fi
+
+    mkdir -p "$module_dir"
+    touch "$module_dir/enable.sh"
+    touch "$module_dir/disable.sh"
+    touch "$module_dir/verify.sh"
+
+    command_module_modify $module $package
 }
 
 # Modify an existing package. Opens enable, disable and verify scripts
@@ -63,6 +87,7 @@ function command_module_new { module=$2; package=$1
 # module: name of the module to edit
 # package: (optional) package name where the module is to be found
 function command_module_modify { module=$2; package=$1
+    echo_info "Placeholder for module modify $module $package"
 }
 
 # Restore backed up package conflicts.

@@ -25,13 +25,15 @@ Plug 'kkoomen/vim-doge'
 Plug 'gcmt/taboo.vim'
 Plug 'axelf4/vim-strip-trailing-whitespace'
 Plug 'tpope/vim-commentary'
-Plug 'vim-vdebug/vdebug'
+"Plug 'vim-vdebug/vdebug'
 Plug 'voldikss/vim-floaterm'
-"Plug 'puremourning/vimspector'
+Plug 'puremourning/vimspector'
 "Plug '~/git/vimbugger'
 
 " Initialize plugin system
 call plug#end()
+
+let g:vimspector_enable_mappings = 'HUMAN'
 
 " Make PHP variables words including the $
 au FileType php set iskeyword+=$

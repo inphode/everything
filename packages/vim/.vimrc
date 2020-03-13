@@ -61,6 +61,10 @@ function! s:DiffUnsavedChanges()
 endfunction
 com! DiffUnsavedChanges call s:DiffUnsavedChanges()
 
+" Fixes issues with syntax highlighting getting messed up in cases of
+" large codeblocks.
+syntax sync minlines=10000
+
 " -- Indentation options
 " New lines inherit the indentation of previous lines
 set autoindent

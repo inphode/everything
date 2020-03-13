@@ -9,3 +9,4 @@ install-terminal-clipboard
 install-node
 install-vim
 enable-php-aliases
+install-mosh

@@ -1,10 +1,10 @@
 #!/bin/bash
 
+git clone https://github.com/nvm-sh/nvm.git $HOME/.nvm
+(cd $HOME/.nvm && git checkout v0.35.3)
+
 bashrcd_enable node
-NVM_DIR=$HOME/.config/nvm
-mkdir -p $NVM_DIR
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+bashrcd_source node
+
 nvm install --lts
 nvm use --lts
-

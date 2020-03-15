@@ -47,6 +47,10 @@ then
     ln -s "$EVERYTHING_PATH/systems/$SYSTEM/environments.list" "$EVERYTHING_PATH/environments.list"
     ln -s "$EVERYTHING_PATH/systems/$SYSTEM/packages.list" "$EVERYTHING_PATH/packages.list"
     ln -s "$EVERYTHING_PATH/systems/$SYSTEM/modules.list" "$EVERYTHING_PATH/modules.list"
+
+    # Add a '+' to each modules.list entry to trigger first-time intall
+    awk '{print "+" $0}' modules.list | sed 's/+#/#/' | tee modules.list > /dev/null
+
     echo -e "\033[36m Please review and re-run.\033[0m"
     exit 1
 fi

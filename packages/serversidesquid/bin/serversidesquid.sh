@@ -2,6 +2,9 @@
 
 SSS_ENV="$HOME/.config/serversidesquid/sss.env"
 
+# Terminate on error
+set -e
+
 # Check for .env file and copy example if it doesn't exist
 if ! [[ -f "$SSS_ENV" ]]; then
     echo "$SSS_ENV file not found."
@@ -40,7 +43,11 @@ sudo hosts add 127.0.1.1 $SSS_HOSTNAME
 sudo usermod -a -G ubuntu,adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd $SSS_USER
 
 # Install common packages
-sudo apt install -y htop tar ripgrep fd-find
+sudo apt install -y htop tar ripgrep fd-find wget
+
+# Install Eternal Terminal
+sudo add-apt-repository ppa:jgmath2000/et -y
+sudo apt-get install -y et
 
 # Set up firewall
 sudo apt install -y ufw
@@ -196,6 +203,12 @@ sudo apt update
 sudo apt install -y insync
 sudo mkdir -p /drive
 sudo chown $SSS_USER:$SSS_USER /drive
+
+# Project directory setup and basic tools install
+mkdir -p ~/git/tools
+wget -O ~/git/tools/adminer.php https://github.com/vrana/adminer/releases/download/v4.7.6/adminer-4.7.6-en.php
+echo "<?php phpinfo();" > ~/git/tools/phpinfo.php
+( cd ~/git && valet park )
 
 echo
 echo "Please connect to an x2go session and run insync to configure file syncing."

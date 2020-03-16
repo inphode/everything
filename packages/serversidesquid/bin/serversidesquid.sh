@@ -37,13 +37,13 @@ sudo apt upgrade -y
 
 # Configure hostname
 sudo hostnamectl set-hostname $SSS_HOSTNAME
-sudo hosts add 127.0.1.1 $SSS_HOSTNAME
+sudo $HOME/bin/hosts add 127.0.1.1 $SSS_HOSTNAME
 
 # Ensure user has standard Ubuntu groups
-sudo usermod -a -G ubuntu,adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd $SSS_USER
+sudo usermod -a -G adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd $SSS_USER
 
 # Install common packages
-sudo apt install -y htop tar ripgrep fd-find wget
+sudo apt install -y htop tar ripgrep fd-find wget nnn
 
 # Install Eternal Terminal
 sudo add-apt-repository ppa:jgmath2000/et -y

@@ -159,8 +159,9 @@ set title
 set showmatch
 
 " -- Misc options
-" Fast terminal
-set ttyfast
+" Fast terminal 'ttyfast', but we're running over SSH now so diable it
+"set ttyfast
+set lazyredraw
 " Automatically re-read files if unmodified inside Vim
 set autoread
 " Allow backspacing over indention, line breaks and insertion start

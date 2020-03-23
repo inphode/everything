@@ -142,11 +142,11 @@ set wildmenu
 " Maximum number of tab pages that can be opened from the command line
 set tabpagemax=50
 " Highlight the line currently under cursor
-"set cursorline
+set cursorline
 " Show line numbers on the sidebar
-"set number
+set number
 " Show line number on the current line and relative numbers on all other lines
-"set relativenumber
+set relativenumber
 " Disable beep on errors
 set noerrorbells
 " Flash the screen instead of beeping on errors

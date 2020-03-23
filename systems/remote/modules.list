@@ -3,3 +3,4 @@ install-node
 install-vim
 enable-php-aliases
 install-mosh
+enable-ssh-agent

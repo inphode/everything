@@ -43,7 +43,7 @@ sudo $HOME/bin/hosts add 127.0.1.1 $SSS_HOSTNAME
 sudo usermod -a -G adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd $SSS_USER
 
 # Install common packages
-sudo apt install -y htop tar ripgrep fd-find wget nnn tmux
+sudo apt install -y htop tar ripgrep fd-find wget nnn keychain tmux
 
 # Install Eternal Terminal
 sudo add-apt-repository ppa:jgmath2000/et -y

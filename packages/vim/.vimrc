@@ -64,6 +64,20 @@ function! s:DiffUnsavedChanges()
 endfunction
 com! DiffUnsavedChanges call s:DiffUnsavedChanges()
 
+" System clipboard save to file and selection to tmux
+let g:clipboard = {
+            \   'name': 'copyToFile',
+            \   'copy': {
+            \      '+': 'tee ~/.clipboard',
+            \      '*': 'tmux load-buffer -',
+            \    },
+            \   'paste': {
+            \      '+': 'tee ~/.clipboard',
+            \      '*': 'tmux save-buffer -',
+            \   },
+            \   'cache_enabled': 1,
+            \ }
+
 " Fixes issues with syntax highlighting getting messed up in cases of
 " large codeblocks.
 syntax sync minlines=10000

@@ -68,11 +68,11 @@ com! DiffUnsavedChanges call s:DiffUnsavedChanges()
 let g:clipboard = {
             \   'name': 'copyToFile',
             \   'copy': {
-            \      '+': 'tee ~/.clipboard',
+            \      '+': 'tee /home/phill/.clipboard',
             \      '*': 'tmux load-buffer -',
             \    },
             \   'paste': {
-            \      '+': 'tee ~/.clipboard',
+            \      '+': 'tee /home/phill/.clipboard',
             \      '*': 'tmux save-buffer -',
             \   },
             \   'cache_enabled': 1,

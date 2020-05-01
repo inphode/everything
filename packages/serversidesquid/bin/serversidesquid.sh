@@ -207,7 +207,7 @@ sudo apt-get install -y x2goserver x2goserver-xsession
 
 # Install insync client
 sudo tee /etc/apt/sources.list.d/insync.list > /dev/null <<EOT
-deb http://apt.insync.io/ubuntu eoan non-free contrib
+deb http://apt.insync.io/ubuntu focal non-free contrib
 EOT
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A684470CACCAF35C
 sudo apt update

@@ -67,24 +67,24 @@ deb-src http://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7
 EOT
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C718D3B5072E1F5
 sudo apt update
-sudo apt install -y mysql-client=5.7.29-1ubuntu18.04
-sudo apt install -y mysql-server=5.7.29-1ubuntu18.04
+sudo apt install -y mysql-client=5.7.30-1ubuntu18.04
+sudo apt install -y mysql-server=5.7.30-1ubuntu18.04
 
 sudo tee /etc/apt/preferences.d/mysql > /dev/null <<EOT
 Package: mysql-server
-Pin: version 5.7.29-1ubuntu18.04
+Pin: version 5.7.30-1ubuntu18.04
 Pin-Priority: 1001
 
 Package: mysql-client
-Pin: version 5.7.29-1ubuntu18.04
+Pin: version 5.7.30-1ubuntu18.04
 Pin-Priority: 1001
 
 Package: mysql-community-server
-Pin: version 5.7.29-1ubuntu18.04
+Pin: version 5.7.30-1ubuntu18.04
 Pin-Priority: 1001
 
 Package: mysql-community-client
-Pin: version 5.7.29-1ubuntu18.04
+Pin: version 5.7.30-1ubuntu18.04
 Pin-Priority: 1001
 EOT
 
@@ -189,6 +189,9 @@ sudo cp /etc/php/5.6/mods-available/xdebug.ini /etc/php/7.2/mods-available/xdebu
 sudo cp /etc/php/5.6/mods-available/xdebug.ini /etc/php/7.3/mods-available/xdebug.ini
 sudo cp /etc/php/5.6/mods-available/xdebug.ini /etc/php/7.4/mods-available/xdebug.ini
 
+echo "Waiting for network to return after valet install..."
+sleep 10
+
 # Install elasticsearch and kibana
 mkdir -p ~/elasticsearch
 if ! [[ -d "~/elasticsearch/elasticsearch-6.4.3" ]]; then
@@ -201,8 +204,6 @@ if ! [[ -d "~/elasticsearch/kibana-6.4.3-linux-x86_64" ]]; then
 fi
 
 # Install x2go
-sudo add-apt-repository ppa:x2go/stable -y
-sudo apt-get update
 sudo apt-get install -y x2goserver x2goserver-xsession
 
 # Install insync client

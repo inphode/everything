@@ -12,8 +12,7 @@ chmod u+x $HOME_PATH/.local/bin/nvim
 
 npm install -g neovim
 
-sudo apt install ruby ruby-dev python-pip python3-pip universal-ctags ripgrep -y
-pip2 install --user --upgrade neovim
+sudo apt install ruby ruby-dev python3-pip universal-ctags ripgrep -y
 pip3 install --user --upgrade neovim
 pip3 install --user --upgrade neovim-remote
 pip3 install --user --upgrade jedi

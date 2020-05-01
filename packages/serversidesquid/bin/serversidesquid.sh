@@ -43,7 +43,7 @@ sudo $HOME/bin/hosts add 127.0.1.1 $SSS_HOSTNAME
 sudo usermod -a -G adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd $SSS_USER
 
 # Install common packages
-sudo apt install -y htop tar ripgrep fd-find wget nnn keychain tmux
+sudo apt install -y htop tar ripgrep fd-find wget nnn keychain tmux openjdk-8-jre
 
 # Install Eternal Terminal
 sudo add-apt-repository ppa:jgmath2000/et -y
@@ -189,6 +189,17 @@ sudo cp /etc/php/5.6/mods-available/xdebug.ini /etc/php/7.2/mods-available/xdebu
 sudo cp /etc/php/5.6/mods-available/xdebug.ini /etc/php/7.3/mods-available/xdebug.ini
 sudo cp /etc/php/5.6/mods-available/xdebug.ini /etc/php/7.4/mods-available/xdebug.ini
 
+# Install elasticsearch and kibana
+mkdir -p ~/elasticsearch
+if ! [[ -d "~/elasticsearch/elasticsearch-6.4.3" ]]; then
+    wget -O ~/elasticsearch/elasticsearch-6.4.3.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.3.tar.gz
+    ( cd ~/elasticsearch; tar zxf elasticsearch-6.4.3.tar.gz )
+fi
+if ! [[ -d "~/elasticsearch/kibana-6.4.3-linux-x86_64" ]]; then
+    wget -O ~/elasticsearch/kibana-6.4.3-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/kibana/kibana-6.4.3-linux-x86_64.tar.gz
+    ( cd ~/elasticsearch; tar zxf kibana-6.4.3-linux-x86_64.tar.gz )
+fi
+
 # Install x2go
 sudo add-apt-repository ppa:x2go/stable -y
 sudo apt-get update
@@ -210,7 +221,17 @@ wget -O ~/git/tools/adminer.php https://github.com/vrana/adminer/releases/downlo
 echo "<?php phpinfo();" > ~/git/tools/phpinfo.php
 ( cd ~/git && valet park )
 
-echo
-echo "Please connect to an x2go session and run insync to configure file syncing."
-echo "Recommended location: /drive"
-echo
+if ! [[ -d "$SSS_EVERYTHING_SYNC" ]]; then
+    echo
+    echo "Please connect to an x2go session and run insync to configure file syncing."
+    echo "Must sync to: /drive"
+    echo
+    echo "Rerun when complete"
+    echo
+    exit 1
+fi
+
+# --- Everything from here is dependant on the sync directory being set up
+
+sudo cp -f "$SSS_EVERYTHING_SYNC/server/network-manager/netsells.nmconnection" /etc/NetworkManager/system-connections/netsells.nmconnection
+

@@ -37,6 +37,7 @@ sudo apt upgrade -y
 
 # Configure hostname
 sudo hostnamectl set-hostname $SSS_HOSTNAME
+sudo $HOME/bin/hosts remove 127.0.1.1 $SSS_HOSTNAME --force
 sudo $HOME/bin/hosts add 127.0.1.1 $SSS_HOSTNAME
 
 # Ensure user has standard Ubuntu groups

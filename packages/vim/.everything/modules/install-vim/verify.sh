@@ -1,7 +1,6 @@
 #!/bin/bash
 
 nvim --version || exit 1
-pip2 --version || exit 1
 pip3 --version || exit 1
 nvr --version || exit 1
 gem --version || exit 1

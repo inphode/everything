@@ -8,3 +8,4 @@ bashrcd_source node
 
 nvm install --lts
 nvm use --lts
+nvm install -g yarn

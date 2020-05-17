@@ -40,11 +40,11 @@ sudo hostnamectl set-hostname $SSS_HOSTNAME
 sudo $HOME/bin/hosts remove 127.0.1.1 $SSS_HOSTNAME --force
 sudo $HOME/bin/hosts add 127.0.1.1 $SSS_HOSTNAME
 
-# Ensure user has standard Ubuntu groups
-sudo usermod -a -G adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd $SSS_USER
-
 # Install common packages
-sudo apt install -y htop tar ripgrep fd-find wget nnn keychain tmux openjdk-8-jre
+sudo apt install -y htop tar ripgrep fd-find wget nnn keychain tmux openjdk-8-jre docker.io docker-compose awscli
+
+# Ensure user has standard Ubuntu groups
+sudo usermod -a -G adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd,docker $SSS_USER
 
 # Install Eternal Terminal
 sudo add-apt-repository ppa:jgmath2000/et -y
@@ -235,5 +235,6 @@ fi
 
 # --- Everything from here is dependant on the sync directory being set up
 
+# This is probably not going to work as intended:
 sudo cp -f "$SSS_EVERYTHING_SYNC/server/network-manager/netsells.nmconnection" /etc/NetworkManager/system-connections/netsells.nmconnection
 

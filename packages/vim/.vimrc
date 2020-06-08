@@ -26,7 +26,7 @@ Plug 'gcmt/taboo.vim'
 Plug 'axelf4/vim-strip-trailing-whitespace'
 Plug 'tpope/vim-commentary'
 "Plug 'vim-vdebug/vdebug'
-Plug 'voldikss/vim-floaterm'
+"Plug 'voldikss/vim-floaterm'
 Plug 'puremourning/vimspector'
 "Plug '~/git/vimbugger'
 
@@ -239,14 +239,21 @@ let NERDTreeAutoDeleteBuffer = 1
 
 " fzf (and ripgrep)
 nmap <leader>f :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
-nmap <leader>/ :BLines<cr>|    " fuzzy find lines in the current file
+nmap <leader>F :FzfAll<cr>|    " fuzzy find files in the working directory (ignore VCS rules)
+nmap <leader>v :FzfVendor<cr>| " fuzzy find files in the vendor directory
+nmap <leader>l :BLines<cr>|    " fuzzy find lines in the current file
+nmap <leader>L :Lines<cr>|     " fuzzy find lines in the current file
 nmap <leader>b :Buffers<cr>|   " fuzzy find an open buffer
 nmap <leader>r :RgProject |    " fuzzy find text in the working directory (honours VCS ignore files)
 nmap <leader>R :RgAll |        " fuzzy find text in the working directory (ignoring VCS ignore files)
 nmap <leader>c :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
-nmap <leader>h :History:<cr>|  " fuzzy find Command history
+nmap <leader>: :History:<cr>|  " fuzzy find Command history
 nmap <leader>e :History<cr>|   " fuzzy find v:oldfiles and open buffers
+nmap <leader>/ :History/<cr>|  " fuzzy find lines in the current file
+nmap <leader>h :Helptags<cr>|  " fuzzy find lines in the current file
 nmap <leader>m :Marks<cr>|     " fuzzy find Marks
+nmap <leader>M :Maps<cr>|      " fuzzy find Maps
+nmap <leader>w :Windows<cr>|   " fuzzy find Maps
 " Enable per-command history.
 let g:fzf_history_dir = '~/.local/share/fzf-history'
 " In Neovim, you can set up fzf window using a Vim command
@@ -278,7 +285,11 @@ let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
 "  call nvim_open_win(buf, v:true, opts)
 "endfunction
 
-"command! -bang -nargs=* FzfAll call fzf#vim#rg(<q-args>, '--skip-vcs-ignores', {'down': '~40%'})
+"command! -bang -nargs=* FzfAll call fzf#vim#files(<q-args>, '--skip-vcs-ignores', {'down': '~40%'})
+"command! -bang -nargs=? -complete=dir FzfAll call fzf#run({'source': 'rg --glob !/node_modules/ --glob !/.git/ --hidden --no-ignore-vcs -l ""', 'sink': 'e'})
+command! -bang -nargs=? -complete=dir FzfAll call fzf#vim#files(<q-args>, {'source': 'rg --glob !/node_modules/ --glob !/.git/ --hidden --no-ignore-vcs -l ""', 'options': ['--info=inline', '--preview', '~/.local/share/nvim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
+"command! -bang -nargs=? -complete=dir FzfVendor call fzf#vim#files(<q-args>, {'source': 'rg --glob !/node_modules/ --glob !/.git/ --hidden --no-ignore-vcs -l "vendor/"'}, <bang>0)
+command! -bang FzfVendor call fzf#vim#files('vendor', <bang>0)
 command! -bang -nargs=* RgProject call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, <bang>0)
 command! -bang -nargs=* RgAll call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case --no-ignore-vcs ".shellescape(<q-args>), 1, <bang>0)
 

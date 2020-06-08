@@ -195,6 +195,10 @@ sleep 10
 
 # Install elasticsearch and kibana
 mkdir -p ~/elasticsearch
+if ! [[ -d "~/elasticsearch/elasticsearch-7.7.0" ]]; then
+    wget -O ~/elasticsearch/elasticsearch-7.7.0-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.7.0-linux-x86_64.tar.gz
+    ( cd ~/elasticsearch; tar zxf elasticsearch-7.7.0-linux-x86_64.tar.gz )
+fi
 if ! [[ -d "~/elasticsearch/elasticsearch-6.4.3" ]]; then
     wget -O ~/elasticsearch/elasticsearch-6.4.3.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.3.tar.gz
     ( cd ~/elasticsearch; tar zxf elasticsearch-6.4.3.tar.gz )

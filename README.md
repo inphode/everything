@@ -9,6 +9,7 @@ Currently has limited use to anyone except myself, but could be stripped back an
 - Debian-based distros (The eventual intention is to make this work on a wide variety of systems)
 - curl package (`sudo apt install curl`)
 - Currently hard-coded to install into `~/.everything`
+- Currently specifically assumes Ubuntu 20.04 LTS
 
 ## Installation
 
@@ -21,5 +22,7 @@ Currently has limited use to anyone except myself, but could be stripped back an
 Run `./everything.sh` to initialise, create directories and see status.
 
 Run `./everything.sh sync` to synchronise packages and modules.
+
+Run `./everything.sh module modify vim install-vim` to modify the `install-vim` module in the `vim` package.
 
 View the contents of `everything.sh` for other available commands.

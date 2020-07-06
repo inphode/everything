@@ -5,39 +5,61 @@ else
     call plug#begin('~/.vim/plugged')
 endif
 
-" !kill -9 $(ps aux | grep vim$ | awk '{print $2}' | xargs)
-
-" Insert plugins here:
+" Automatic session tracking with :Obsession
 Plug 'tpope/vim-obsession'
+" Nice clean, well made theme without too many colours
 Plug 'fenetikm/falcon'
+" Brings up a file tree with <leader>n or <leader>N (finds current file in tree)
 Plug 'scrooloose/nerdtree'
+" Shows git changes in nerd tree window
 Plug 'Xuyuanp/nerdtree-git-plugin'
+" Allows jumping around files by typing 's' followed by 2 characters
 Plug 'easymotion/vim-easymotion'
+" Lightweight status line and tab/buffer line
 Plug 'vim-airline/vim-airline'
+" Contains a theme to match falcon vim theme
 Plug 'vim-airline/vim-airline-themes'
+" Git commands like :Gblame and :Glog
 Plug 'tpope/vim-fugitive'
+" Adds git changes to left gutter/margin
 Plug 'mhinz/vim-signify'
+" Statup screen, with cowsay quote and recent files
 Plug 'mhinz/vim-startify'
+" Very heavy plugin that implements LSP from VS Code - full code intelligence
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Basic support for blade template files
 Plug 'jwalton512/vim-blade'
+" Adds some extra operations around adding/changing quotes, brackets etc.
 Plug 'tpope/vim-surround'
+" Adds support for repeating some of Tim Pope's other plugins with '.' operator
 Plug 'tpope/vim-repeat'
+" Allows C-a and C-x to increment and decrement dates and complex numbers
 Plug 'tpope/vim-speeddating'
+" Installs the FZF command on the system needed for the FZF vim plugin
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Powerful file find and search plugin, which uses FZF and Ripgrep
 Plug 'junegunn/fzf.vim'
-"Plug 'justinmk/vim-sneak'
+" PHP documentation generator with <leader>d
 Plug 'kkoomen/vim-doge'
+" Allows naming/renaming tabs, instead of using buffer names
 Plug 'gcmt/taboo.vim'
+" Automatically strips trailing whitespace only on lines that have been edited
 Plug 'axelf4/vim-strip-trailing-whitespace'
+" Allows quckly commenting and uncommmenting blocks of code with 'gc'
 Plug 'tpope/vim-commentary'
 if has('nvim')
+    " nvim does not deal with vimspector well, so we use this less ideal plugin
     Plug 'vim-vdebug/vdebug', {'branch': 'master'}
 endif
-"Plug 'voldikss/vim-floaterm'
 if !has('nvim')
+    " Enable a sensible set of key bindings (mostly function keys) for vimspector
     let g:vimspector_enable_mappings = 'HUMAN'
+    " Debugging client which uses VS Code plugins - works well on vim but not nvim
     Plug 'puremourning/vimspector'
 endif
+" An interesting floating terminal plugin. Disabled as I don't need it with tmux
+"Plug 'voldikss/vim-floaterm'
+" My own xdebug plugin. Very incomplete.
 "Plug '~/git/vimbugger'
 
 " Initialize plugin system
@@ -47,7 +69,9 @@ call plug#end()
 if !exists('g:vdebug_options')
     let g:vdebug_options = {}
 endif
+" Don't break on first line of first file
 let g:vdebug_options.break_on_open = 0
+" Stop the debugger on closed connection
 let g:vdebug_options.on_close = 'stop'
 
 " Make PHP variables words including the $
@@ -62,10 +86,10 @@ au FileType php set iskeyword+=$
 "vnoremap <A-j> :m '>+1<CR>gv=gv
 "vnoremap <A-k> :m '<-2<CR>gv=gv
 
-" Auto-complete from any anywhere
+" Auto-complete from anything anywhere
 inoremap <C-l> <c-x><c-n>
 
-" Make neovim handle escape to exit terminal mode (without affecting FZF)
+" Make <Esc> in neovim exit terminal mode (without conflicting with FZF)
 if has('nvim')
     au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
     au FileType fzf tunmap <buffer> <Esc>
@@ -81,7 +105,7 @@ function! s:DiffUnsavedChanges()
 endfunction
 com! DiffUnsavedChanges call s:DiffUnsavedChanges()
 
-" System clipboard save to file and selection to tmux
+" Set clipboard save to file with + register and to tmux with * register
 let g:clipboard = {
             \   'name': 'copyToFile',
             \   'copy': {
@@ -96,7 +120,8 @@ let g:clipboard = {
             \ }
 
 " Fixes issues with syntax highlighting getting messed up in cases of
-" large codeblocks.
+" large codeblocks. Set even larger if dealing with files with more
+" than 10,000 lines.
 syntax sync minlines=10000
 
 " -- Indentation options
@@ -141,6 +166,7 @@ set wrap
 
 " -- Theme/colour options
 if !has('nvim')
+    " This is necessary when trying to use nvim through SSH and tmux
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
@@ -158,17 +184,20 @@ let g:falcon_background = 1
 let g:falcon_inactive = 0
 colorscheme falcon
 if !has('nvim')
-    "highlight Comment ctermbg=0
+    " Fix colour issues with vanilla vim
     highlight Comment cterm=NONE
 endif
 
 " Ayu theme
+" This was a nice theme too, but incomplete. Leaving here to remind me to
+" check it out in the future.
 "let ayucolor="light"  " for light version of theme
 "let ayucolor="mirage" " for mirage version of theme
 "let ayucolor="dark"   " for dark version of theme
 "colorscheme ayu
 
-" Visual selection colour
+" Custom visual selection colour
+" Not necessary for current theme, as I like it's selection colour
 "highlight Visual cterm=bold ctermbg=LightYellow ctermfg=NONE
 
 " -- User interface options
@@ -178,7 +207,8 @@ set laststatus=2
 set ruler
 " Display command line’s tab complete options as a menu
 set wildmenu
-" Vertical auto complete menu (seems to be enabled by default
+" Vertical auto complete menu (seems to be enabled by default, but maybe
+" needed for vanilla vim)
 "set wildoptions+=pum
 " Maximum number of tab pages that can be opened from the command line
 set tabpagemax=50
@@ -190,11 +220,12 @@ set number
 set relativenumber
 " Disable beep on errors
 set noerrorbells
-" Flash the screen instead of beeping on errors
+" Flash the screen instead of beeping on errors (This can get annoying)
 "set visualbell
 " Enable mouse for scrolling and resizing
 set mouse=a
 if !has('nvim')
+    " Fix mouse dragging compatibility when using neovim with SSH and tmux
     set ttymouse=sgr
 endif
 " Set the window’s title, reflecting the file currently being edited
@@ -203,8 +234,10 @@ set title
 set showmatch
 
 " -- Misc options
-" Fast terminal 'ttyfast', but we're running over SSH now so diable it
+" Fast terminal 'ttyfast' - should maybe be disabled on slow SSH
 set ttyfast
+" This will do less redraw operations - good for slow SSH but can cause some
+" issues with garbage left on screen.
 "set lazyredraw
 " Automatically re-read files if unmodified inside Vim
 set autoread
@@ -231,9 +264,8 @@ let mapleader=" "
 nnoremap <SPACE> <Nop>
 " Highlight last changed test
 nnoremap gp `[v`]
-" Highlight last changed text in line selection mode
-nnoremap gV `[v`]
-" turn off search highlight
+" Turn off search highlight - This is probably an odd/bad key binding, but I'm
+" so used to it now.
 nnoremap <leader>s :nohlsearch<CR>
 
 " -- Plugin options
@@ -241,7 +273,7 @@ nnoremap <leader>s :nohlsearch<CR>
 " Make Taboo save tab names in session
 set sessionoptions+=tabpages,globals
 " EasyMotion
-" gs{char}{char} to move to {char}{char} over windows
+" s{char}{char} to move to {char}{char} over windows
 nmap s <Plug>(easymotion-overwin-f2)
 
 " Startify
@@ -263,69 +295,50 @@ let g:startify_lists = [
             \ ]
 
 " Nerdtree toggle
+" Toggle the nerd tree window
 map <leader>n :NERDTreeToggle<cr>
+" Toggle the nerd tree window and find the current file in the tree
 map <leader>N :NERDTreeFind<cr>
+" Minimum UI
 let NERDTreeMinimalUI = 1
+" Render arrows for open/closed directories
 let NERDTreeDirArrows = 1
+" Delete the buffer if it's open when deleting the associated file
 let NERDTreeAutoDeleteBuffer = 1
 
 " fzf (and ripgrep)
 nmap <leader>f :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
-nmap <leader>F :FzfAll<cr>|    " fuzzy find files in the working directory (ignore VCS rules)
+nmap <leader>F :FzfAll<cr>|    " fuzzy find files in the working directory (ignore gitignore rules)
 nmap <leader>v :FzfVendor<cr>| " fuzzy find files in the vendor directory
-nmap <leader>l :BLines<cr>|    " fuzzy find lines in the current file
-nmap <leader>L :Lines<cr>|     " fuzzy find lines in the current file
+nmap <leader>l :BLines<cr>|    " fuzzy find lines in the current buffer
+nmap <leader>L :Lines<cr>|     " fuzzy find lines in all buffers
 nmap <leader>b :Buffers<cr>|   " fuzzy find an open buffer
 nmap <leader>r :RgProject |    " fuzzy find text in the working directory (honours VCS ignore files)
 nmap <leader>R :RgAll |        " fuzzy find text in the working directory (ignoring VCS ignore files)
-nmap <leader>c :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
-nmap <leader>: :History:<cr>|  " fuzzy find Command history
+nmap <leader>c :Commands<cr>|  " fuzzy find vim commands (like Ctrl-Shift-P in Sublime/Atom/VS Code)
+nmap <leader>: :History:<cr>|  " fuzzy find command history
 nmap <leader>e :History<cr>|   " fuzzy find v:oldfiles and open buffers
-nmap <leader>/ :History/<cr>|  " fuzzy find lines in the current file
-nmap <leader>h :Helptags<cr>|  " fuzzy find lines in the current file
-nmap <leader>m :Marks<cr>|     " fuzzy find Marks
-nmap <leader>M :Maps<cr>|      " fuzzy find Maps
-nmap <leader>w :Windows<cr>|   " fuzzy find Maps
-" Enable per-command history.
+nmap <leader>/ :History/<cr>|  " fuzzy find search history
+nmap <leader>h :Helptags<cr>|  " fuzzy find help documentation
+nmap <leader>m :Marks<cr>|     " fuzzy find marks
+nmap <leader>M :Maps<cr>|      " fuzzy find keyboard mappings
+nmap <leader>w :Windows<cr>|   " fuzzy find windows
+
+" Enable per-command history with FZF
 let g:fzf_history_dir = '~/.local/share/fzf-history'
-" In Neovim, you can set up fzf window using a Vim command
-"let g:fzf_layout = { 'window': 'enew' }
-"let g:fzf_layout = { 'window': '-tabnew' }
-"let g:fzf_layout = { 'window': '10new' }
-"let $FZF_DEFAULT_OPTS='--layout=reverse'
-
+" Set the floating window layout for FZF
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
-"let $FZF_DEFAULT_OPTS='--preview "head -100 `echo {} | awk -F: \"{print $1}\"`"'
 
-"let g:fzf_layout = { 'window': 'call FloatingFZF()' }
-"function! FloatingFZF()
-"  let buf = nvim_create_buf(v:false, v:true)
-"  call setbufvar(buf, '&signcolumn', 'no')
-"
-"  let height = &lines - 8
-"  let width = float2nr(&columns - (&columns * 2 / 10))
-"  let col = float2nr((&columns - width) / 2)
-"
-"  let opts = {
-"        \ 'relative': 'editor',
-"        \ 'row': 4,
-"        \ 'col': col,
-"        \ 'width': width,
-"        \ 'height': height
-"        \ }
-"
-"  call nvim_open_win(buf, v:true, opts)
-"endfunction
-
-"command! -bang -nargs=* FzfAll call fzf#vim#files(<q-args>, '--skip-vcs-ignores', {'down': '~40%'})
-"command! -bang -nargs=? -complete=dir FzfAll call fzf#run({'source': 'rg --glob !/node_modules/ --glob !/.git/ --hidden --no-ignore-vcs -l ""', 'sink': 'e'})
+" Custom FZF command to search all files without honouring gitignore
 command! -bang -nargs=? -complete=dir FzfAll call fzf#vim#files(<q-args>, {'source': 'rg --glob !/node_modules/ --glob !/.git/ --hidden --no-ignore-vcs -l ""', 'options': ['--info=inline', '--preview', '~/.local/share/nvim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
-"command! -bang -nargs=? -complete=dir FzfVendor call fzf#vim#files(<q-args>, {'source': 'rg --glob !/node_modules/ --glob !/.git/ --hidden --no-ignore-vcs -l "vendor/"'}, <bang>0)
+" Custom FZF command to search only in the vendor folder
 command! -bang FzfVendor call fzf#vim#files('vendor', <bang>0)
+" Custom FZF command to find text in project files
 command! -bang -nargs=* RgProject call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, <bang>0)
+" Custom FZF command to find text in all files without honouring gitignore
 command! -bang -nargs=* RgAll call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case --no-ignore-vcs ".shellescape(<q-args>), 1, <bang>0)
 
-" Use rg as the find command to respect gitignore
+" Use rg as the find command to respect gitignore, and improve search speed
 let $FZF_DEFAULT_COMMAND = 'rg --glob !/.git/ --hidden -l ""'
 
 " When using `dd` in the quickfix list, remove the item from the quickfix list.
@@ -342,25 +355,21 @@ endfunction
 autocmd FileType qf map <buffer> dd :RemoveQFItem<cr>
 autocmd FileType qf map <buffer> <C-k> :cp<cr>:copen<cr>
 autocmd FileType qf map <buffer> <C-j> :cn<cr>:copen<cr>
-"nnoremap <buffer> <silent> dd
-"  \ <Cmd>call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r') <Bar> cc<CR>
 
-nmap <leader>q :cdo |  " perform command on each entry in the quickfix list
-nmap <leader>Q :cfdo | " perform command on each file in the quickfix list
+" Perform command on each entry in the quickfix list
+nmap <leader>q :cdo |
+" Perform command on each file in the quickfix list
+nmap <leader>Q :cfdo |
+" Jump to previous item in the quickfix list
 nmap [q :cp<cr>
+" Jump to next item in the quickfix list
 nmap ]q :cn<cr>
+" Jump to previous quickfix list
 nmap [Q :colder<cr>
+" Jump to next quickfix list
 nmap ]Q :cnewer<cr>
 
-" Floaterm
-command! Ranger FloatermNew ranger
-nnoremap <silent> <leader>g :Ranger<cr>
-let g:floaterm_keymap_toggle = '<leader>t'
-let g:floaterm_position = 'center'
-let g:floaterm_width = 0.8
-let g:floaterm_height = 0.8
-
-" coc.vim
+" coc.vim - The below is mostly taken from the example on the coc.vim github
 " Make syntax highlighting work for jsonc comments
 autocmd FileType json syntax match Comment +\/\/.\+$+
 " Some servers have issues with backup files, see #649
@@ -442,7 +451,7 @@ nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 "nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 nnoremap <silent> <space>y  :<C-u>CocList yank<cr>
 
-" Vimbugger bindings
+" Vimbugger bindings - my own incomplete plugin
 "nnoremap <leader>gs :VimbuggerStart<CR>
 "nnoremap <leader>gS :VimbuggerStop<CR>
 "nnoremap <leader>gb :VimbuggerBreakpoint<CR>

@@ -418,6 +418,8 @@ set nomodeline
 set nrformats-=octal
 " Persist undo in a file in current directory
 set undofile
+" Keycode timeout length in milliseconds
+set ttimeoutlen=10
 
 
 " -- Additional custom functionality

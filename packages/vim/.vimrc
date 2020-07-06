@@ -270,11 +270,6 @@ call plug#end()
 
 " -- Theme/colour options
 
-if !has('nvim')
-    " This is necessary when trying to use nvim through SSH and tmux
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-endif
 " Enable syntax highlighting
 syntax enable
 " Enable true color support
@@ -289,8 +284,14 @@ let g:falcon_background = 1
 let g:falcon_inactive = 0
 colorscheme falcon
 if !has('nvim')
-    " Fix colour issues with vanilla vim
-    highlight Comment cterm=NONE
+    " Fix colour issues with italics in vanilla vim
+    highlight Comment cterm=NONE ctermfg=243 gui=NONE guifg=#787882
+    highlight Todo cterm=NONE ctermfg=0 ctermbg=187 gui=NONE guifg=#020221 guibg=#DDCFBF
+    highlight Italic cterm=NONE gui=NONE
+    highlight phpDocTags cterm=NONE ctermfg=246 gui=NONE guifg=#a1968a
+    " This is necessary when trying to use vanilla vim through SSH and tmux
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 
 " Ayu theme
@@ -422,15 +423,15 @@ set undofile
 " -- Additional custom functionality
 
 " Make PHP variables words including the $
-au FileType php set iskeyword+=$
+autocmd FileType php set iskeyword+=$
 
 " Auto-complete from anything anywhere
 inoremap <C-l> <c-x><c-n>
 
 " Make <Esc> in neovim exit terminal mode (without conflicting with FZF)
 if has('nvim')
-    au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-    au FileType fzf tunmap <buffer> <Esc>
+    autocmd TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+    autocmd FileType fzf tunmap <buffer> <Esc>
 endif
 
 " Adds a DiffSaved command for seeing a diff of changes since last save

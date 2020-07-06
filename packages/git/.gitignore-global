@@ -12,4 +12,6 @@ local-packages/
 tags
 Session.vim
 *.hidden
+.vimspector.json
+.rgignore
 

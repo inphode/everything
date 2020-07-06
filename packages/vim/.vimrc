@@ -1,9 +1,14 @@
 " Specify a directory for plugins
-call plug#begin('~/.local/share/nvim/plugged')
+if has('nvim')
+    call plug#begin('~/.local/share/nvim/plugged')
+else
+    call plug#begin('~/.vim/plugged')
+endif
 
 " !kill -9 $(ps aux | grep vim$ | awk '{print $2}' | xargs)
 
 " Insert plugins here:
+Plug 'tpope/vim-obsession'
 Plug 'fenetikm/falcon'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -25,15 +30,25 @@ Plug 'kkoomen/vim-doge'
 Plug 'gcmt/taboo.vim'
 Plug 'axelf4/vim-strip-trailing-whitespace'
 Plug 'tpope/vim-commentary'
-"Plug 'vim-vdebug/vdebug'
+if has('nvim')
+    Plug 'vim-vdebug/vdebug', {'branch': 'master'}
+endif
 "Plug 'voldikss/vim-floaterm'
-Plug 'puremourning/vimspector'
+if !has('nvim')
+    let g:vimspector_enable_mappings = 'HUMAN'
+    Plug 'puremourning/vimspector'
+endif
 "Plug '~/git/vimbugger'
 
 " Initialize plugin system
 call plug#end()
 
-let g:vimspector_enable_mappings = 'HUMAN'
+" Vdebug options
+if !exists('g:vdebug_options')
+    let g:vdebug_options = {}
+endif
+let g:vdebug_options.break_on_open = 0
+let g:vdebug_options.on_close = 'stop'
 
 " Make PHP variables words including the $
 au FileType php set iskeyword+=$
@@ -51,8 +66,10 @@ au FileType php set iskeyword+=$
 inoremap <C-l> <c-x><c-n>
 
 " Make neovim handle escape to exit terminal mode (without affecting FZF)
-au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
-au FileType fzf tunmap <buffer> <Esc>
+if has('nvim')
+    au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+    au FileType fzf tunmap <buffer> <Esc>
+endif
 
 " Adds a DiffSaved command for seeing a diff of changes since last save
 function! s:DiffUnsavedChanges()
@@ -123,6 +140,10 @@ set sidescrolloff=10
 set wrap
 
 " -- Theme/colour options
+if !has('nvim')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+endif
 " Enable syntax highlighting
 syntax enable
 " Enable true color support
@@ -133,7 +154,13 @@ let g:airline_theme = 'falcon'
 " Smarter tab line (displays buffers when there's 1 tab)
 let g:airline#extensions#tabline#enabled = 1
 " Enable falcon color scheme
+let g:falcon_background = 1
+let g:falcon_inactive = 0
 colorscheme falcon
+if !has('nvim')
+    "highlight Comment ctermbg=0
+    highlight Comment cterm=NONE
+endif
 
 " Ayu theme
 "let ayucolor="light"  " for light version of theme
@@ -167,6 +194,9 @@ set noerrorbells
 "set visualbell
 " Enable mouse for scrolling and resizing
 set mouse=a
+if !has('nvim')
+    set ttymouse=sgr
+endif
 " Set the window’s title, reflecting the file currently being edited
 set title
 " Highlight matching bracket
@@ -174,8 +204,8 @@ set showmatch
 
 " -- Misc options
 " Fast terminal 'ttyfast', but we're running over SSH now so diable it
-"set ttyfast
-set lazyredraw
+set ttyfast
+"set lazyredraw
 " Automatically re-read files if unmodified inside Vim
 set autoread
 " Allow backspacing over indention, line breaks and insertion start
@@ -192,6 +222,8 @@ set history=1000
 set nomodeline
 " Interpret octal as decimal when incrementing numbers
 set nrformats-=octal
+" Persist undo in a file in current directory
+set undofile
 
 " -- Additional functionality
 " Map leader key to space
@@ -335,7 +367,7 @@ autocmd FileType json syntax match Comment +\/\/.\+$+
 set nobackup
 set nowritebackup
 " Better display for messages
-set cmdheight=2
+"set cmdheight=2
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
 " don't give |ins-completion-menu| messages.

@@ -26,3 +26,10 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 nvim +PlugInstall +qall > /dev/null
 nvim -c 'CocInstall -sync coc-json coc-html coc-tsserver coc-css coc-vetur coc-phpls coc-yaml coc-python coc-highlight coc-yank coc-git coc-texlab|q'
 
+# Install vanilla vim
+sudo add-apt-repository ppa:jonathonf/vim -y
+sudo apt install vim -y
+
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+

@@ -43,6 +43,9 @@ sudo $HOME/bin/hosts add 127.0.1.1 $SSS_HOSTNAME
 # Install common packages
 sudo apt install -y htop tar ripgrep fd-find wget nnn keychain tmux openjdk-8-jre docker.io docker-compose awscli
 
+# Install python packages
+pip3 install openapi-spec-validator
+
 # Ensure user has standard Ubuntu groups
 sudo usermod -a -G adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd,docker $SSS_USER
 

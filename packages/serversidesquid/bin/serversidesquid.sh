@@ -121,10 +121,18 @@ sudo service php5.6-fpm start
 sudo systemctl enable php5.6-fpm.service
 
 # Install composer
+EXPECTED_CHECKSUM="$(wget -q -O - https://composer.github.io/installer.sig)"
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('sha384', 'composer-setup.php') === 'e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
+ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
+then
+    >&2 echo 'ERROR: Invalid installer checksum'
+    rm composer-setup.php
+    exit 1
+fi
+php composer-setup.php --quiet
+RESULT=$?
+rm composer-setup.php
 sudo mv composer.phar /usr/local/bin/composer
 
 # Install valet
@@ -197,18 +205,18 @@ echo "Waiting for network to return after valet install..."
 sleep 10
 
 # Install elasticsearch and kibana
-mkdir -p ~/elasticsearch
-if ! [[ -d "~/elasticsearch/elasticsearch-7.7.0" ]]; then
-    wget -O ~/elasticsearch/elasticsearch-7.7.0-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.7.0-linux-x86_64.tar.gz
-    ( cd ~/elasticsearch; tar zxf elasticsearch-7.7.0-linux-x86_64.tar.gz )
+mkdir -p $HOME/elasticsearch
+if ! [[ -d "$HOME/elasticsearch/elasticsearch-7.7.0" ]]; then
+    wget -O $HOME/elasticsearch/elasticsearch-7.7.0-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.7.0-linux-x86_64.tar.gz
+    ( cd $HOME/elasticsearch; tar zxf elasticsearch-7.7.0-linux-x86_64.tar.gz )
 fi
-if ! [[ -d "~/elasticsearch/elasticsearch-6.4.3" ]]; then
-    wget -O ~/elasticsearch/elasticsearch-6.4.3.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.3.tar.gz
-    ( cd ~/elasticsearch; tar zxf elasticsearch-6.4.3.tar.gz )
+if ! [[ -d "$HOME/elasticsearch/elasticsearch-6.4.3" ]]; then
+    wget -O $HOME/elasticsearch/elasticsearch-6.4.3.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.3.tar.gz
+    ( cd $HOME/elasticsearch; tar zxf elasticsearch-6.4.3.tar.gz )
 fi
-if ! [[ -d "~/elasticsearch/kibana-6.4.3-linux-x86_64" ]]; then
-    wget -O ~/elasticsearch/kibana-6.4.3-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/kibana/kibana-6.4.3-linux-x86_64.tar.gz
-    ( cd ~/elasticsearch; tar zxf kibana-6.4.3-linux-x86_64.tar.gz )
+if ! [[ -d "$HOME/elasticsearch/kibana-6.4.3-linux-x86_64" ]]; then
+    wget -O $HOME/elasticsearch/kibana-6.4.3-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/kibana/kibana-6.4.3-linux-x86_64.tar.gz
+    ( cd $HOME/elasticsearch; tar zxf kibana-6.4.3-linux-x86_64.tar.gz )
 fi
 
 # Install x2go
@@ -225,10 +233,10 @@ sudo mkdir -p /drive
 sudo chown $SSS_USER:$SSS_USER /drive
 
 # Project directory setup and basic tools install
-mkdir -p ~/git/tools
-wget -O ~/git/tools/adminer.php https://github.com/vrana/adminer/releases/download/v4.7.6/adminer-4.7.6-en.php
-echo "<?php phpinfo();" > ~/git/tools/phpinfo.php
-( cd ~/git && valet park )
+mkdir -p $HOME/git/tools
+wget -O $HOME/git/tools/adminer.php https://www.adminer.org/latest-en.php
+echo "<?php phpinfo();" > $HOME/git/tools/phpinfo.php
+( cd $HOME/git && valet park )
 
 if ! [[ -d "$SSS_EVERYTHING_SYNC" ]]; then
     echo

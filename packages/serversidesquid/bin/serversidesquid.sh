@@ -253,3 +253,14 @@ fi
 # This is probably not going to work as intended:
 sudo cp -f "$SSS_EVERYTHING_SYNC/server/network-manager/netsells.nmconnection" /etc/NetworkManager/system-connections/netsells.nmconnection
 
+# Install intelephense with license key and update other node stuff too
+mkdir -p "$HOME/intelephense"
+mkdir -p "$HOME/.vim"
+cp -f "$SSS_EVERYTHING_SYNC/server/intelephense/license.txt" "$HOME/intelephense/license.txt"
+cp -f "$SSS_EVERYTHING_SYNC/server/coc-settings.json" "$HOME/.config/nvim/coc-settings.json"
+cp -f "$SSS_EVERYTHING_SYNC/server/coc-settings.json" "$HOME/.vim/coc-settings.json"
+#nvm install --lts
+#nvm use --lts
+#npm -g install yarn
+#npm -g install intelephense
+

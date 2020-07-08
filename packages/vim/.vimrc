@@ -134,11 +134,13 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
     endfunction
     " Highlight symbol under cursor on CursorHold
     autocmd CursorHold * silent call CocActionAsync('highlight')
-    " Remap for rename current word
-    "nmap gR <Plug>(coc-rename)
-    nmap gR :CocCommand document.renameCurrentWord<cr>
-    nmap gx <Plug>(coc-cursors-operator)
-    " VS Code-like multi-cursor
+    " Refactor/rename current word intelligently
+    nmap gR <Plug>(coc-rename)
+    " Multicursor select all instances of current word
+    nmap gM :CocCommand document.renameCurrentWord<cr>
+    " Multicursor select/deselect object (eg. gmiw)
+    nmap gm <Plug>(coc-cursors-operator)
+    " VS Code-like multicursor
     nmap <expr> <silent> <C-m> <SID>select_current_word()
     function! s:select_current_word()
         if !get(g:, 'coc_cursors_activated', 0)

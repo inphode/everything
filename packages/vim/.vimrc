@@ -84,6 +84,8 @@ Plug 'mhinz/vim-startify'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
     " coc.vim - The below is mostly taken from the example on the coc.vim github
+    " Increase max heap memory
+    let g:coc_node_args = ['--max-old-space-size=8192']
     " Make syntax highlighting work for jsonc comments
     autocmd FileType json syntax match Comment +\/\/.\+$+
     " Some servers have issues with backup files, see #649
@@ -133,10 +135,20 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
     " Highlight symbol under cursor on CursorHold
     autocmd CursorHold * silent call CocActionAsync('highlight')
     " Remap for rename current word
-    "nmap <leader>R <Plug>(coc-rename)
+    "nmap gR <Plug>(coc-rename)
+    nmap gR :CocCommand document.renameCurrentWord<cr>
+    nmap gx <Plug>(coc-cursors-operator)
+    " VS Code-like multi-cursor
+    nmap <expr> <silent> <C-m> <SID>select_current_word()
+    function! s:select_current_word()
+        if !get(g:, 'coc_cursors_activated', 0)
+            return "\<Plug>(coc-cursors-word)"
+        endif
+        return "*\<Plug>(coc-cursors-word):nohlsearch\<CR>"
+    endfunc
     " Remap for format selected region
-    "xmap <leader>f  <Plug>(coc-format-selected)
-    "nmap <leader>f  <Plug>(coc-format-selected)
+    xmap gF  <Plug>(coc-format-selected)
+    nmap gF  <Plug>(coc-format-selected)
     " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
     "xmap <leader>a  <Plug>(coc-codeaction-selected)
     "nmap <leader>a  <Plug>(coc-codeaction-selected)
@@ -164,6 +176,18 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
     nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
     "nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
     nnoremap <silent> <space>y  :<C-u>CocList yank<cr>
+
+" Provides linting using phpcs, phpcbf, php-cs-fixer etc.
+Plug 'dense-analysis/ale'
+
+    " ALE - use :ALEInfo for debugging
+    let g:ale_linters = {'php': ['phpcs']}
+    let g:ale_fixers = {'php': ['phpcbf', 'remove_trailing_lines', 'trim_whitespace']}
+    let g:ale_php_phpcs_standard = 'PSR12'
+    " Don't show warnings
+    let g:ale_php_phpcs_options = '--warning-severity=0'
+    let g:ale_php_phpcbf_standard = 'PSR12'
+    "let g:ale_fix_on_save = 1
 
 " Basic support for blade template files
 Plug 'jwalton512/vim-blade'

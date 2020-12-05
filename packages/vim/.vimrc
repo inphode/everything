@@ -15,6 +15,11 @@ else
     call plug#begin('~/.vim/plugged')
 endif
 
+" My own PHP XDebug plugin
+let &runtimepath.=',/home/phill/git/bugger'
+let g:bugg_enable_default_bindings = 1
+let g:bugg_enable_fzf_support = 1
+
 " Automatic session tracking with :Obsession
 Plug 'tpope/vim-obsession'
 
@@ -63,20 +68,42 @@ Plug 'mhinz/vim-signify'
 " Statup screen, with cowsay quote and recent files
 Plug 'mhinz/vim-startify'
 
+    " Enable unicode characters
+    let g:startify_fortune_use_unicode = 1
     " When opening a file or bookmark, don't change to its directory
     let g:startify_change_to_dir = 0
     " When opening a file or bookmark, seek and change to the root of the VCS
     let g:startify_change_to_vcs_root = 1
     " Bookmarks (these should probably be moved outside the VCS
-    let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/.bashrc' ]
+    let g:startify_bookmarks = [
+                \ {'r': '~/.vimrc'},
+                \ {'R': '~/.bashrc'},
+                \ ]
     " Common commands
-    let g:startify_commands = [ {'u': ['Update Plugins', 'PlugUpdate']} ]
+    let g:startify_commands = [
+                \ {'I': ['Install Plugins', 'PlugInstall']},
+                \ {'U': ['Update Plugins', 'PlugUpdate']},
+                \ ]
+    " returns all modified files of the current git repo
+    " `2>/dev/null` makes the command fail quietly, so that when we are not
+    " in a git repo, the list will be empty
+    function! s:gitModified()
+        let files = systemlist('git ls-files -m 2>/dev/null')
+        return map(files, "{'line': v:val, 'path': v:val}")
+    endfunction
+    " same as above, but show untracked files, honouring .gitignore
+    function! s:gitUntracked()
+        let files = systemlist('git ls-files -o --exclude-standard 2>/dev/null')
+        return map(files, "{'line': v:val, 'path': v:val}")
+    endfunction
     " Startify list ordering
     let g:startify_lists = [
                 \ { 'type': 'sessions',  'header': ['   Sessions']       },
-                \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
-                \ { 'type': 'files',     'header': ['   MRU']            },
+                \ { 'type': function('s:gitModified'),  'header': ['   ✗ Modified']},
+                \ { 'type': function('s:gitUntracked'), 'header': ['   ✗ Created']},
                 \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+                \ { 'type': 'files',     'header': ['   MRU']            },
+                \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
                 \ { 'type': 'commands',  'header': ['   Commands']       },
                 \ ]
 
@@ -155,7 +182,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
     "xmap <leader>a  <Plug>(coc-codeaction-selected)
     "nmap <leader>a  <Plug>(coc-codeaction-selected)
     " Remap for do codeAction of current line
-    "nmap <leader>ac  <Plug>(coc-codeaction)
+    nmap <leader><cr>  <Plug>(coc-codeaction)
     " Fix autofix problem of current line
     "nmap <leader>qf  <Plug>(coc-fix-current)
     " Use <tab> for select selections ranges, needs server support, like: coc-tsserver, coc-python
@@ -183,13 +210,14 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'dense-analysis/ale'
 
     " ALE - use :ALEInfo for debugging
-    let g:ale_linters = {'php': ['phpcs']}
+    let g:ale_linters = {'php': ['phpcs'], 'python': []}
     let g:ale_fixers = {'php': ['phpcbf', 'remove_trailing_lines', 'trim_whitespace']}
     let g:ale_php_phpcs_standard = 'PSR12'
     " Don't show warnings
     let g:ale_php_phpcs_options = '--warning-severity=0'
     let g:ale_php_phpcbf_standard = 'PSR12'
     "let g:ale_fix_on_save = 1
+    nmap <leader>A :ALEToggle<cr>
 
 " Basic support for blade template files
 Plug 'jwalton512/vim-blade'
@@ -354,6 +382,15 @@ set shiftwidth=4
 set smarttab
 " Indent using four spaces
 set tabstop=4
+" File-specific indent
+augroup filetype_yaml
+    autocmd!
+    autocmd BufNewFile,BufReadPost *.{yaml,yml} set filetype=yaml foldmethod=indent
+    autocmd FileType yaml |
+        setlocal shiftwidth=2 |
+        setlocal softtabstop=2 |
+        setlocal tabstop=2
+augroup END
 
 
 " -- Search options

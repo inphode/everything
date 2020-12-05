@@ -257,8 +257,8 @@ sudo cp -f "$SSS_EVERYTHING_SYNC/server/network-manager/netsells.nmconnection" /
 mkdir -p "$HOME/intelephense"
 mkdir -p "$HOME/.vim"
 cp -f "$SSS_EVERYTHING_SYNC/server/intelephense/license.txt" "$HOME/intelephense/license.txt"
-cp -f "$SSS_EVERYTHING_SYNC/server/coc-settings.json" "$HOME/.config/nvim/coc-settings.json"
-cp -f "$SSS_EVERYTHING_SYNC/server/coc-settings.json" "$HOME/.vim/coc-settings.json"
+cp -f "$SSS_EVERYTHING_SYNC/server/vim/coc-settings.json" "$HOME/.config/nvim/coc-settings.json"
+cp -f "$SSS_EVERYTHING_SYNC/server/vim/coc-settings.json" "$HOME/.vim/coc-settings.json"
 #nvm install --lts
 #nvm use --lts
 #npm -g install yarn
